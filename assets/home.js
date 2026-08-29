@@ -800,8 +800,8 @@
       state.progress = 0;
       t0 = performance.now();
       applyVisibility();
-      // 粒子方向联动：向下一屏 → 粒子向下流；向上一屏 → 粒子向上涌
-      if (window.__fx && window.__fx.pulse) window.__fx.pulse(dir > 0 ? -1 : 1);
+      // 粒子方向联动：向下一屏 → 粒子向下流（正脉冲）；向上一屏 → 粒子向上涌
+      if (window.__fx && window.__fx.pulse) window.__fx.pulse(dir > 0 ? 1 : -1);
       if (reduced) { finish(); return true; }
       waveShow();
       rafWave = requestAnimationFrame(waveFrame);

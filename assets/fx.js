@@ -94,17 +94,18 @@
   }
 
   /* ---- 方向流：粒子随“上下操作”整体改向 ----
-     flow ∈ [-1.4, 1.4]：+ 向上涌，- 向下流；操作后约 1.5s 衰减回
-     环境态（缓慢上飘）。场景切换（home）与普通页面滚动都会触发。 */
+     flow ∈ [-7, 7]：+ 向下流，- 向上涌（屏幕 y 向下为正）；
+     脉冲后约 2s 衰减回环境态（缓慢上飘）。
+     场景切换（home）与普通页面滚动都会触发。 */
   var flow = 0, flowTarget = 0;
 
   window.__fx = {
     pulse: function (dir) {
-      flowTarget = 1.4 * (dir >= 0 ? 1 : -1);
+      flowTarget = 7 * (dir >= 0 ? 1 : -1);
     },
     dbg: function () {
       var n = 0, sum = 0;
-      for (var i = 0; i < parts.length; i++) { n++; sum += parts[i].vy + flow * 0.45; }
+      for (var i = 0; i < parts.length; i++) { n++; sum += parts[i].vy + flow * 0.6; }
       return { flow: +flow.toFixed(3), target: +flowTarget.toFixed(3), avgVy: n ? +(sum / n).toFixed(3) : 0, parts: n };
     }
   };
@@ -118,20 +119,21 @@
     var now = performance.now();
     if (Math.abs(dy) < 3 || now - lastPulse < 140) return;
     lastPulse = now;
-    window.__fx.pulse(dy > 0 ? -1 : 1);
+    window.__fx.pulse(dy > 0 ? 1 : -1);
   }, { passive: true });
 
   function step(dt) {
     ctx.clearRect(0, 0, W, H);
 
-    // 流向缓动 + 脉冲衰减（约 1.5s 回到环境态）
-    flow += (flowTarget - flow) * Math.min(1, dt * 0.005);
-    flowTarget *= Math.exp(-dt / 1500);
+    // 流向缓动（约 200ms 到位）+ 脉冲衰减（约 2s 回到环境态）
+    flow += (flowTarget - flow) * Math.min(1, dt * 0.012);
+    flowTarget *= Math.exp(-dt / 1600);
 
     for (var i = parts.length - 1; i >= 0; i--) {
       var p = parts[i];
+      var vyEff = p.vy + flow * 0.6;
       p.x += p.vx * dt * 0.06;
-      p.y += (p.vy + flow * 0.45) * dt * 0.06;
+      p.y += vyEff * dt * 0.06;
       if (p.life !== undefined) {
         p.life -= dt * 0.06;
         if (p.life <= 0 || p.y < -10 || p.y > H + 10 || p.x < -10 || p.x > W + 10) {
@@ -139,12 +141,12 @@
           continue;
         }
       }
-      // 尘埃/余烬飘出边界后重投（流动循环：向上从底部回，向下从顶部回）
-      if (p.y < -12) {
-        p.y = H + 8;
-        p.x = rand(0, W);
-      } else if (p.y > H + 12) {
+      // 尘埃/余烬飘出边界后重投（流动循环：向下流从顶部回，向上从底部回）
+      if (p.y > H + 12) {
         p.y = -8;
+        p.x = rand(0, W);
+      } else if (p.y < -12) {
+        p.y = H + 8;
         p.x = rand(0, W);
       } else if (p.x < -12) p.x = W + 6;
       else if (p.x > W + 12) p.x = -6;
@@ -152,11 +154,21 @@
       var tw = 0.6 + 0.4 * Math.sin(p.tw + performance.now() * 0.0012);
       var alpha = p.a * tw;
       if (p.life !== undefined) alpha *= clamp(p.life / 40, 0, 1);
-
+      // 快速流动时粒子提亮并拉成竖向流光（拖尾指向运动的反方向）
+      var af = Math.abs(flow);
+      alpha = Math.min(0.85, alpha * (1 + Math.min(1.2, af * 0.35)));
       if (p.kind === 1) {
         ctx.font = Math.round(p.s) + 'px "Fusion Pixel 12px Mono zh_hans", Menlo, Consolas, monospace';
         ctx.fillStyle = 'rgba(255,255,255,' + alpha.toFixed(3) + ')';
         ctx.fillText(p.ch, p.x, p.y);
+      } else if (af > 1.8) {
+        var tail = clamp(Math.abs(vyEff) * 2.6, 3, 22) * (vyEff > 0 ? -1 : 1);
+        ctx.strokeStyle = 'rgba(255,255,255,' + (alpha * 0.85).toFixed(3) + ')';
+        ctx.lineWidth = p.s;
+        ctx.beginPath();
+        ctx.moveTo(p.x, p.y);
+        ctx.lineTo(p.x + p.vx * 4, p.y + tail);
+        ctx.stroke();
       } else {
         ctx.fillStyle = 'rgba(255,255,255,' + alpha.toFixed(3) + ')';
         ctx.fillRect(p.x, p.y, p.s, p.s);
