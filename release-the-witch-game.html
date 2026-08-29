@@ -1,0 +1,386 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+  <meta name="theme-color" content="#090b12">
+  <meta name="description" content="《放开那个女巫：灰堡黎明》网页试玩版">
+  <title>灰堡黎明 · 网页试玩</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --ink: #090b12;
+      --panel: rgba(14, 17, 27, .9);
+      --line: rgba(219, 184, 103, .35);
+      --gold: #d9b866;
+      --gold-bright: #f1d894;
+      --mist: #b7bfcc;
+      --red: #9b3541;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      width: 100%;
+      min-height: 100%;
+      margin: 0;
+      overflow: hidden;
+      background: var(--ink);
+      font-family: Georgia, "Songti SC", "Noto Serif CJK SC", serif;
+    }
+
+    body {
+      color: #f3ead4;
+      background-image:
+        linear-gradient(90deg, rgba(5, 7, 12, .98), rgba(5, 7, 12, .58) 50%, rgba(5, 7, 12, .98)),
+        linear-gradient(180deg, rgba(5, 7, 12, .5), rgba(5, 7, 12, .92)),
+        url("assets/hero_16x9.webp");
+      background-position: center;
+      background-size: cover;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: .24;
+      background-image:
+        repeating-linear-gradient(0deg, transparent 0 3px, rgba(255,255,255,.025) 4px),
+        radial-gradient(circle at 50% 20%, rgba(217,184,102,.15), transparent 34%);
+    }
+
+    .page {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      min-height: 100svh;
+      display: grid;
+      grid-template-rows: 64px 1fr 36px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-width: 0;
+      padding: 0 24px;
+      border-bottom: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(8,10,17,.96), rgba(12,14,22,.82));
+      box-shadow: 0 10px 35px rgba(0,0,0,.34);
+      backdrop-filter: blur(16px);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+      color: #f5ead2;
+      text-decoration: none;
+    }
+
+    .crest {
+      width: 34px;
+      height: 40px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      color: var(--gold-bright);
+      border: 1px solid rgba(217,184,102,.55);
+      background: linear-gradient(145deg, rgba(155,53,65,.7), rgba(34,20,29,.9));
+      clip-path: polygon(8% 0, 92% 0, 100% 70%, 50% 100%, 0 70%);
+      font: 700 17px/1 Georgia, serif;
+      text-shadow: 0 0 12px rgba(241,216,148,.65);
+    }
+
+    .brand-copy { min-width: 0; }
+
+    .brand-title {
+      display: block;
+      overflow: hidden;
+      color: #f5ead2;
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: 0;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .brand-subtitle {
+      display: block;
+      margin-top: 2px;
+      color: #a9a49a;
+      font: 11px/1.2 Arial, sans-serif;
+      letter-spacing: 0;
+    }
+
+    .tools {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex: 0 0 auto;
+    }
+
+    .icon-button {
+      width: 40px;
+      height: 40px;
+      display: grid;
+      place-items: center;
+      padding: 0;
+      color: #e8dcc4;
+      border: 1px solid rgba(217,184,102,.28);
+      border-radius: 4px;
+      background: rgba(19,22,32,.78);
+      cursor: pointer;
+      text-decoration: none;
+      transition: color .2s ease, border-color .2s ease, background .2s ease, transform .2s ease;
+    }
+
+    .icon-button:hover {
+      color: var(--gold-bright);
+      border-color: rgba(217,184,102,.72);
+      background: rgba(72,52,39,.72);
+      transform: translateY(-1px);
+    }
+
+    .icon-button svg {
+      width: 20px;
+      height: 20px;
+      fill: none;
+      stroke: currentColor;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-width: 1.8;
+    }
+
+    .stage {
+      min-height: 0;
+      display: grid;
+      place-items: center;
+      padding: 20px;
+    }
+
+    .device-frame {
+      position: relative;
+      width: min(100%, calc((100svh - 140px) * .5625));
+      max-width: 540px;
+      height: min(calc(100svh - 140px), calc(100vw * 1.77778));
+      max-height: 960px;
+      overflow: hidden;
+      border: 1px solid rgba(241,216,148,.58);
+      border-radius: 6px;
+      background: #05070b;
+      box-shadow:
+        0 0 0 5px rgba(9,11,18,.92),
+        0 0 0 6px rgba(217,184,102,.18),
+        0 28px 80px rgba(0,0,0,.58),
+        0 0 70px rgba(155,53,65,.13);
+    }
+
+    .device-frame::before,
+    .device-frame::after {
+      content: "◆";
+      position: absolute;
+      z-index: 4;
+      top: 9px;
+      color: rgba(241,216,148,.78);
+      font-size: 9px;
+      pointer-events: none;
+    }
+
+    .device-frame::before { left: 10px; }
+    .device-frame::after { right: 10px; }
+
+    iframe {
+      display: block;
+      width: 100%;
+      height: 100%;
+      border: 0;
+      background: #080b12;
+    }
+
+    .loader {
+      position: absolute;
+      z-index: 3;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      text-align: center;
+      background:
+        radial-gradient(circle at 50% 40%, rgba(117,75,46,.28), transparent 42%),
+        linear-gradient(180deg, #111520, #07090f);
+      transition: opacity .45s ease, visibility .45s ease;
+    }
+
+    .loader.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .sigil {
+      width: 76px;
+      height: 76px;
+      margin: 0 auto 18px;
+      display: grid;
+      place-items: center;
+      color: var(--gold-bright);
+      border: 1px solid rgba(217,184,102,.62);
+      border-radius: 50%;
+      box-shadow: inset 0 0 22px rgba(217,184,102,.12), 0 0 26px rgba(217,184,102,.1);
+      animation: sigil-turn 3.5s linear infinite;
+    }
+
+    .sigil::before {
+      content: "✦";
+      font-size: 30px;
+      animation: sigil-turn 3.5s linear infinite reverse;
+    }
+
+    .loader-title {
+      margin: 0;
+      font-size: 19px;
+      letter-spacing: 0;
+    }
+
+    .loader-status {
+      margin: 9px 0 0;
+      color: var(--mist);
+      font: 12px/1.5 Arial, sans-serif;
+      letter-spacing: 0;
+    }
+
+    @keyframes sigil-turn { to { transform: rotate(360deg); } }
+
+    .footnote {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 16px;
+      color: rgba(209,205,195,.68);
+      font: 11px/1 Arial, sans-serif;
+      letter-spacing: 0;
+      text-align: center;
+    }
+
+    @media (max-width: 680px) {
+      .page { grid-template-rows: 54px 1fr; }
+      .topbar { padding: 0 10px 0 12px; }
+      .crest { width: 29px; height: 34px; font-size: 14px; }
+      .brand { gap: 9px; }
+      .brand-title { font-size: 15px; }
+      .brand-subtitle { display: none; }
+      .tools { gap: 6px; }
+      .icon-button { width: 36px; height: 36px; }
+      .stage { padding: 0; }
+      .device-frame {
+        width: 100%;
+        max-width: none;
+        height: calc(100svh - 54px);
+        max-height: none;
+        border: 0;
+        border-radius: 0;
+        box-shadow: none;
+      }
+      .device-frame::before,
+      .device-frame::after { display: none; }
+      .footnote { display: none; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
+    }
+  </style>
+<link rel="stylesheet" href="assets/fx.css?v=2026-08-28-34">
+  <script src="assets/fx.js?v=2026-08-28-31" defer></script>
+</head>
+<body>
+  <main class="page">
+    <header class="topbar">
+      <a class="brand" href="./" aria-label="返回作品集">
+        <span class="crest" aria-hidden="true">灰</span>
+        <span class="brand-copy">
+          <span class="brand-title">放开那个女巫：灰堡黎明</span>
+          <span class="brand-subtitle">WEB PLAYABLE</span>
+        </span>
+      </a>
+      <nav class="tools" aria-label="游戏工具">
+        <button class="icon-button" id="reloadButton" type="button" title="重新载入" aria-label="重新载入">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.34-5.66L20 8"/><path d="M20 3v5h-5"/></svg>
+        </button>
+        <button class="icon-button" id="fullscreenButton" type="button" title="全屏" aria-label="全屏">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H3v5M16 3h5v5M8 21H3v-5M16 21h5v-5"/></svg>
+        </button>
+        <a class="icon-button" href="./" title="返回作品集" aria-label="返回作品集">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+        </a>
+      </nav>
+    </header>
+
+    <section class="stage" aria-label="游戏画面">
+      <div class="device-frame" id="gameFrame">
+        <div class="loader" id="loader" role="status" aria-live="polite">
+          <div>
+            <div class="sigil" aria-hidden="true"></div>
+            <h1 class="loader-title">正在开启灰堡之门</h1>
+            <p class="loader-status" id="loaderStatus">首次载入需要一些时间</p>
+          </div>
+        </div>
+        <iframe
+          id="game"
+          title="放开那个女巫：灰堡黎明"
+          src="game/release-the-witch/index.html"
+          allow="autoplay; fullscreen; gamepad"
+          allowfullscreen
+        ></iframe>
+      </div>
+    </section>
+
+    <footer class="footnote">Godot 网页试玩版 · 建议使用最新版 Chrome、Edge 或 Safari</footer>
+  </main>
+
+  <script>
+    const game = document.getElementById('game');
+    const frame = document.getElementById('gameFrame');
+    const loader = document.getElementById('loader');
+    const loaderStatus = document.getElementById('loaderStatus');
+    const fullscreenButton = document.getElementById('fullscreenButton');
+
+    let loadTimer = window.setTimeout(() => {
+      loaderStatus.textContent = '资源仍在载入，请稍候';
+    }, 8000);
+
+    game.addEventListener('load', () => {
+      window.clearTimeout(loadTimer);
+      window.setTimeout(() => loader.classList.add('hidden'), 700);
+    });
+
+    document.getElementById('reloadButton').addEventListener('click', () => {
+      loader.classList.remove('hidden');
+      loaderStatus.textContent = '正在重新载入';
+      game.src = game.src;
+    });
+
+    fullscreenButton.addEventListener('click', async () => {
+      try {
+        if (document.fullscreenElement) {
+          await document.exitFullscreen();
+        } else {
+          await frame.requestFullscreen();
+        }
+      } catch (error) {
+        loader.classList.remove('hidden');
+        loaderStatus.textContent = '当前浏览器不支持全屏模式';
+        window.setTimeout(() => loader.classList.add('hidden'), 1800);
+      }
+    });
+
+    document.addEventListener('fullscreenchange', () => {
+      fullscreenButton.title = document.fullscreenElement ? '退出全屏' : '全屏';
+      fullscreenButton.setAttribute('aria-label', fullscreenButton.title);
+    });
+  </script>
+</body>
+</html>

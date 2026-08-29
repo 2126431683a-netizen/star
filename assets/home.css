@@ -1,0 +1,2221 @@
+/* ============================================================
+   主页 · 像素风 UI（home.css · v2）
+   仿照 Moonshot 招聘《关于我们》页：纯黑底、像素字体大标题、
+   中央像素传送门、四角信息位、矩阵字符雨滚动特效。
+   星系（solar）部分仍沿用 site.css / site.js，不改动。
+   ============================================================ */
+
+/* ---- 顶部导航（固定） ---- */
+.ph-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 28px;
+  background: rgba(0, 0, 0, 0.72);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+}
+
+.ph-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: #fff;
+  font-family: var(--pixel);
+  font-size: 15px;
+  letter-spacing: 0.1em;
+}
+
+.ph-brand .ph-brand-mark {
+  width: 12px;
+  height: 12px;
+  background: #fff;
+  box-shadow: 0 0 14px rgba(255, 255, 255, 0.8);
+  image-rendering: pixelated;
+}
+
+.ph-links {
+  display: flex;
+  align-items: center;
+  gap: 26px;
+}
+
+.ph-links a {
+  position: relative;
+  color: rgba(255, 255, 255, 0.62);
+  font-family: var(--pixel);
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  transition: color 160ms ease;
+}
+
+.ph-links a:hover,
+.ph-links a:focus-visible {
+  color: #fff;
+}
+
+.ph-links a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 100%;
+  bottom: -6px;
+  height: 1px;
+  background: #fff;
+  transition: right 200ms ease;
+}
+
+.ph-links a:hover::after,
+.ph-links a:focus-visible::after {
+  right: 0;
+}
+
+.ph-burger {
+  display: none;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  color: #fff;
+  font-family: var(--pixel);
+  font-size: 18px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/* ---- 首屏 HERO ---- */
+.scene-hero {
+  display: block;
+  padding: 0;
+  min-height: 100svh;
+  background: #000;
+}
+
+.ph-portal {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  background: #000;
+}
+
+/* 半调网点纹理（边缘可见，中央留给传送门） */
+.ph-dots {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.5) 1px, transparent 1.4px);
+  background-size: 6px 6px;
+  -webkit-mask-image: radial-gradient(90% 90% at 50% 50%, transparent 34%, rgba(0, 0, 0, 0.85) 100%);
+  mask-image: radial-gradient(90% 90% at 50% 50%, transparent 34%, rgba(0, 0, 0, 0.85) 100%);
+  opacity: 0.5;
+}
+
+/* 左上角标题区 */
+.ph-hero-copy {
+  position: absolute;
+  z-index: 3;
+  top: 17%;
+  left: 6%;
+  max-width: 560px;
+}
+
+.ph-kicker {
+  margin: 0 0 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: rgba(255, 255, 255, 0.72);
+  font-family: var(--pixel);
+  font-size: clamp(14px, 1.6vw, 18px);
+  letter-spacing: 0.2em;
+}
+
+.ph-kicker::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  background: #fff;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.9);
+}
+
+.ph-title {
+  margin: 0;
+  color: #fff;
+  font-family: var(--pixel);
+  font-weight: 400;
+  font-size: clamp(26px, 4.6vw, 46px);
+  line-height: 1.3;
+  letter-spacing: 0.06em;
+  text-shadow: 0 0 22px rgba(255, 255, 255, 0.22);
+}
+
+.ph-title .ph-hl {
+  position: relative;
+  white-space: nowrap;
+}
+
+.ph-title .ph-hl::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -10px;
+  width: 100%;
+  height: 4px;
+  background-image: linear-gradient(90deg, #fff 0 55%, transparent 55%), linear-gradient(90deg, transparent 0 45%, #fff 45%);
+  background-size: 10px 4px;
+  opacity: 0.85;
+}
+
+.ph-role {
+  margin: 22px 0 0;
+  color: rgba(255, 255, 255, 0.5);
+  font-family: var(--pixel);
+  font-size: clamp(12px, 1.3vw, 14px);
+  letter-spacing: 0.12em;
+}
+
+/* 底部信息位（左下 / 右下） */
+.ph-hero-foot {
+  position: absolute;
+  z-index: 3;
+  left: 6%;
+  right: 6%;
+  bottom: 9%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.ph-builder {
+  max-width: 320px;
+}
+
+.ph-foot-kicker {
+  margin: 0 0 8px;
+  color: rgba(255, 255, 255, 0.66);
+  font-family: var(--pixel);
+  font-size: 13px;
+  letter-spacing: 0.14em;
+}
+
+.ph-builder-note {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 12.5px;
+  line-height: 1.9;
+  letter-spacing: 0.04em;
+}
+
+.ph-facts {
+  display: flex;
+  gap: 22px;
+  margin-top: 16px;
+}
+
+.ph-facts span {
+  color: rgba(255, 255, 255, 0.44);
+  font-family: var(--pixel);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+}
+
+.ph-facts strong {
+  color: #fff;
+  font-size: 16px;
+  margin-right: 4px;
+}
+
+/* 右下大字（像素） */
+.ph-tagline {
+  text-align: right;
+}
+
+.ph-tagline .ph-foot-kicker {
+  margin-bottom: 14px;
+}
+
+.ph-tagline .ph-foot-big {
+  margin: 0;
+  color: #fff;
+  font-family: var(--pixel);
+  font-weight: 400;
+  font-size: clamp(26px, 4.2vw, 44px);
+  line-height: 1.18;
+  letter-spacing: 0.04em;
+  text-shadow: 0 0 26px rgba(255, 255, 255, 0.24);
+}
+
+/* 底部中央滚动提示 */
+.ph-hint {
+  position: absolute;
+  z-index: 4;
+  left: 50%;
+  bottom: 26px;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 18px;
+  color: rgba(255, 255, 255, 0.6);
+  font-family: var(--pixel);
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  backdrop-filter: blur(6px);
+  cursor: pointer;
+  transition: color 200ms ease, border-color 200ms ease, box-shadow 200ms ease;
+}
+
+.ph-hint:hover,
+.ph-hint:focus-visible {
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.34);
+  box-shadow: 0 0 26px rgba(255, 255, 255, 0.16);
+}
+
+.ph-hint:hover .pixel-arrow,
+.ph-hint:focus-visible .pixel-arrow {
+  animation: hint-bounce 830ms ease-in-out infinite;
+}
+
+/* ---- 探索阶段（矩阵字符雨） ---- */
+.explore {
+  position: relative;
+  min-height: 100svh;
+  overflow: hidden;
+  background: #000;
+}
+
+.explore-canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  background: #000;
+}
+
+.explore-title {
+  position: absolute;
+  z-index: 2;
+  top: 7%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 0;
+  color: rgba(255, 255, 255, 0.9);
+  font-family: var(--pixel);
+  font-weight: 400;
+  font-size: clamp(20px, 3vw, 30px);
+  letter-spacing: 0.14em;
+  white-space: nowrap;
+  text-shadow: 0 0 24px rgba(255, 255, 255, 0.3);
+}
+
+.explore-title::before,
+.explore-title::after {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.explore-note {
+  position: absolute;
+  z-index: 2;
+  top: calc(7% + 64px);
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 0;
+  color: rgba(255, 255, 255, 0.42);
+  font-family: var(--pixel);
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  white-space: nowrap;
+}
+
+/* ---- 页脚 ---- */
+.ph-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 34px 28px 40px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.ph-footer small,
+.ph-footer a {
+  color: rgba(255, 255, 255, 0.5);
+  font-family: var(--pixel);
+  font-size: 12.5px;
+  letter-spacing: 0.08em;
+}
+
+.ph-footer a:hover {
+  color: #fff;
+}
+
+.ph-footer-nav {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+/* ---- 响应式 ---- */
+@media (max-width: 760px) {
+  .ph-header {
+    padding: 12px 16px;
+  }
+  .ph-links {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    padding: 14px 18px 18px;
+    background: rgba(0, 0, 0, 0.94);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  }
+  .ph-links a {
+    display: block;
+    padding: 9px 0;
+    width: 100%;
+  }
+  .ph-header.ph-open .ph-links {
+    display: flex;
+  }
+  .ph-burger {
+    display: block;
+  }
+
+  .ph-hero-copy {
+    top: 13%;
+    left: 7%;
+    right: 7%;
+  }
+  .ph-hero-foot {
+    left: 7%;
+    right: 7%;
+    bottom: 13%;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+  }
+  .ph-tagline {
+    text-align: left;
+  }
+  .ph-dots {
+    opacity: 0.35;
+  }
+  .explore-title {
+    top: 9%;
+  }
+  .explore-note {
+    top: calc(9% + 60px);
+  }
+}
+
+/* ============================================================
+   作品胶片（Odyssey）—— 仿 The AGI Odyssey 的胶带展示页
+   ============================================================ */
+.odyssey {
+  position: relative;
+  overflow: hidden;
+  background: #000;
+  min-height: 100svh;
+}
+
+/* 背景：整版“印刷字符”纹理 */
+.odyssey-textfield {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  opacity: 0.9;
+}
+
+/* 左侧胶带（带齿孔导轨） */
+.film-strip {
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  bottom: 0;
+  left: clamp(14px, 4vw, 64px);
+  width: 300px;
+}
+
+.film-strip::before,
+.film-strip::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 22px;
+  background:
+    repeating-linear-gradient(180deg,
+      rgba(255, 255, 255, 0.85) 0 9px,
+      transparent 9px 24px);
+  background-size: 12px 24px;
+  background-position: center;
+  opacity: 0.16;
+  pointer-events: none;
+}
+
+.film-strip::before { left: 0; }
+.film-strip::after { right: 0; }
+
+.film-track {
+  position: absolute;
+  left: 26px;
+  right: 26px;
+  top: 0;
+  animation: film-loop 30s linear infinite;
+}
+
+@keyframes film-loop {
+  to { transform: translateY(-50%); }
+}
+
+/* 胶片按用户要求必须循环播放：即使系统开启减弱动态，也只放慢不放停 */
+@media (prefers-reduced-motion: reduce) {
+  .film-track { animation-duration: 44s; }
+}
+
+.film-frame {
+  position: relative;
+  height: 196px;
+  margin-bottom: 26px;
+  border-radius: 20px;
+  background: #0c0c0c;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.55), inset 0 0 0 4px rgba(255, 255, 255, 0.02);
+  overflow: hidden;
+}
+
+.film-frame::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(0deg,
+    rgba(0, 0, 0, 0.5) 0 1px,
+    transparent 1px 3px);
+  opacity: 0.55;
+}
+
+.film-frame canvas {
+  position: absolute;
+  inset: 10% 12%;
+  width: 76%;
+  height: 80%;
+  image-rendering: pixelated;
+}
+
+/* 右侧文案块 */
+.odyssey-copy {
+  position: absolute;
+  z-index: 2;
+  top: 50%;
+  right: clamp(28px, 9vw, 140px);
+  transform: translateY(-50%);
+  max-width: 430px;
+}
+
+.odyssey-title {
+  margin: 0 0 6px;
+  color: #fff;
+  font-family: var(--pixel);
+  font-weight: 400;
+  font-size: clamp(24px, 3vw, 38px);
+  letter-spacing: 0.1em;
+}
+
+.odyssey-since {
+  margin: 0 0 42px;
+  color: rgba(255, 255, 255, 0.55);
+  font-family: var(--pixel);
+  font-size: clamp(14px, 1.6vw, 19px);
+  letter-spacing: 0.14em;
+}
+
+.odyssey-lines {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.82);
+  font-family: var(--pixel);
+  font-size: clamp(12px, 1.25vw, 14px);
+  line-height: 2.1;
+  letter-spacing: 0.1em;
+}
+
+.odyssey-lines .en {
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.odyssey .ph-hint {
+  z-index: 3;
+}
+
+/* 响应式 */
+@media (max-width: 760px) {
+  .film-strip {
+    left: 10px;
+    width: 200px;
+  }
+  .film-track {
+    left: 18px;
+    right: 18px;
+  }
+  .film-frame {
+    height: 132px;
+    border-radius: 14px;
+  }
+  .odyssey-copy {
+    right: 14px;
+    max-width: 46vw;
+  }
+  .odyssey-since {
+    margin-bottom: 24px;
+  }
+}
+
+/* ============================================================
+   星系 · 流程轨道动效（仿“登月申请流程”：
+   点阵网格背景 + 一条虚线大轨道 + 带编号的月球节点 +
+   节点来回循环摆动 + 轨道上游走的闪光点）
+   ============================================================ */
+
+/* 点阵网格背景 */
+.orbit-grid {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.2) 1px, transparent 1.8px);
+  background-size: 26px 26px;
+  opacity: 0.55;
+  -webkit-mask-image: radial-gradient(78% 78% at 50% 46%, rgba(0, 0, 0, 0.7), transparent 100%);
+  mask-image: radial-gradient(78% 78% at 50% 46%, rgba(0, 0, 0, 0.7), transparent 100%);
+}
+
+/* 只保留一条大虚线轨道 */
+.scene-solar .orbit-1,
+.scene-solar .orbit-3 {
+  display: none;
+}
+
+.scene-solar .orbit-2 {
+  width: 524px;
+  height: 524px;
+  border: 0;
+  background: repeating-conic-gradient(rgba(255, 255, 255, 0.3) 0deg 2.4deg, transparent 2.4deg 9.6deg);
+  -webkit-mask: radial-gradient(closest-side, transparent calc(100% - 4px), #000 calc(100% - 4px));
+  mask: radial-gradient(closest-side, transparent calc(100% - 4px), #000 calc(100% - 4px));
+  animation: orbit-spin 120s linear infinite;
+  opacity: 1;
+}
+
+/* 月球节点（参考图：灰度月面 + 陨石坑） */
+.scene-solar .planet-core {
+  width: 56px;
+  height: 56px;
+  background:
+    radial-gradient(circle at 30% 26%, #ffffff 0%, #cdcdcd 32%, #8d8d8d 60%, #383838 84%, #0c0c0c 100%);
+  box-shadow:
+    inset -10px -12px 26px rgba(0, 0, 0, 0.82),
+    0 0 20px rgba(255, 255, 255, 0.16);
+}
+
+.planet-p2 .planet-core {
+  width: 62px;
+  height: 62px;
+}
+
+.scene-solar .planet-core::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 66% 30%, rgba(0, 0, 0, 0.5) 0 7%, transparent 8%),
+    radial-gradient(circle at 34% 62%, rgba(0, 0, 0, 0.42) 0 9%, transparent 10%),
+    radial-gradient(circle at 60% 74%, rgba(0, 0, 0, 0.48) 0 6%, transparent 7%),
+    radial-gradient(circle at 44% 42%, rgba(255, 255, 255, 0.3) 0 5%, transparent 6%);
+}
+
+/* 编号角标（JS 注入 01-06） */
+.planet-badge {
+  position: absolute;
+  top: -8px;
+  left: 40px;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #f2f2f2;
+  color: #000;
+  font-family: var(--pixel);
+  font-size: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.6);
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.35);
+}
+
+/* 月球群绕圈“横着转”（参考图：保持队形一起公转） */
+.planet-p1, .planet-p2, .planet-p3, .planet-p4, .planet-p5, .planet-p6 {
+  animation: orbit-group 44s linear infinite;
+}
+
+@keyframes orbit-group {
+  from { --rev: 0deg; }
+  to { --rev: 360deg; }
+}
+
+/* 轨道上游走的闪光点（同向绕圈） */
+.solar-stage::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 10px;
+  height: 10px;
+  margin: -5px 0 0 -5px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow:
+    0 0 12px 5px rgba(255, 255, 255, 0.4),
+    0 0 30px 14px rgba(255, 255, 255, 0.1);
+  animation: comet-orbit 44s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes comet-orbit {
+  from { transform: rotate(0deg) translate(0, -262px); }
+  to { transform: rotate(360deg) translate(0, -262px); }
+}
+
+/* 标题字号放大，匹配流程页 */
+.scene-solar .solar-title {
+  font-size: clamp(18px, 2.6vw, 28px);
+  letter-spacing: 0.16em;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* 场景模式：标题下移，避免被顶部固定导航盖住 */
+body[data-page="home"].scene-mode .scene-solar .solar-title {
+  top: 96px;
+}
+
+/* ============================================================
+   全站统一（首页局部）：星系色调对齐单色材质
+   ============================================================ */
+
+/* 月球节点：纹理由生成器提供（坑洼月面），去掉 CSS 假陨石坑 */
+.scene-solar .planet-core::before {
+  display: none;
+}
+
+.scene-solar .planet-core {
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.12),
+    0 0 22px rgba(255, 255, 255, 0.18);
+}
+
+/* ============================================================
+   轨道坐标修正：按钮=球体；标签/光晕外置；锚点补偿。
+   —— 之前按钮含标签，静态中心在 (50%,50%)+(w/2,h/2)，
+      导致月球围绕偏离圆心的点公转、与虚线轨道错位。
+   ============================================================ */
+.solar-stage .planet,
+.solar-stage .sun {
+  display: block;
+  gap: 0;
+}
+
+.solar-stage .planet-core,
+.solar-stage .sun-core {
+  display: block;
+}
+
+.solar-stage .planet-label {
+  position: absolute;
+  top: calc(100% + 12px);
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.solar-stage .sun-glow {
+  inset: 0;
+  margin: auto;
+  width: 130px;
+  height: 130px;
+}
+
+/* 锚点补偿：先把元素中心平移回舞台中心，再执行轨道变换 */
+.solar-stage .planet,
+.solar-stage .sun {
+  transform:
+    translate(calc(-1 * var(--ox, 28px)), calc(-1 * var(--oy, 28px)))
+    rotate(calc(var(--angle) + var(--rev)))
+    translate(var(--dist, 0px), 0)
+    rotate(calc(-1 * (var(--angle) + var(--rev))));
+}
+
+/* 画框内项目字幕 */
+.film-caption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 10px;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.5);
+  font-family: var(--pixel);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  white-space: nowrap;
+  text-shadow: 0 0 8px rgba(0, 0, 0, 0.9);
+}
+
+/* ============================================================
+   星系 · GSAP 编排配套
+   ============================================================ */
+.orbit-comet {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow:
+    0 0 12px 5px rgba(255, 255, 255, 0.4),
+    0 0 30px 14px rgba(255, 255, 255, 0.1);
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* GSAP 生效时，隐藏 CSS 版彗星（避免双彗星） */
+.solar-stage.has-gsap::after {
+  display: none;
+}
+
+/* ============================================================
+   深空星系团（星系周围的空间装饰层）
+   ============================================================ */
+.space-deep {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  z-index: 0;
+  pointer-events: none;
+  animation: deep-drift 240s ease-in-out infinite alternate;
+}
+
+@keyframes deep-drift {
+  from { transform: translateX(-42px); }
+  to { transform: translateX(42px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .space-deep { animation: none; }
+}
+
+.orbit-grid {
+  z-index: 1;
+}
+
+/* ============================================================
+   整屏场景切换（sv-*）：状态机场景层 + 字符波面转场贴片
+   ============================================================ */
+
+/* 场景模式：锁定视口，放弃真实滚动（由 home.js 添加 .scene-mode） */
+body[data-page="home"].scene-mode {
+  overflow: hidden;
+  height: 100vh;
+}
+
+body[data-page="home"].scene-mode .scene-flow {
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+}
+
+body[data-page="home"].scene-mode .scene-flow > .scene,
+body[data-page="home"].scene-mode .scene-flow > footer {
+  position: absolute;
+  inset: 0;
+  min-height: 0;
+  scroll-snap-type: none;
+  scroll-snap-align: none;
+}
+
+.sv-scene {
+  will-change: opacity, transform, clip-path;
+}
+
+.sv-current {
+  z-index: 2;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.sv-incoming {
+  z-index: 1;
+  visibility: visible;
+}
+
+.sv-hidden {
+  z-index: 1;
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* 转场字符波面（fixed，高于场景内容，不挡交互） */
+.sv-wave {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  image-rendering: pixelated;
+}
+
+/* 联系场景（第四屏） */
+.scene-contact {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 20px;
+  background: #000;
+}
+
+.ph-contact {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  text-align: center;
+  max-width: 560px;
+}
+
+.ph-contact-title {
+  margin: 0;
+  color: #fff;
+  font-family: var(--pixel);
+  font-weight: 400;
+  font-size: clamp(30px, 5vw, 56px);
+  line-height: 1.2;
+  letter-spacing: 0.08em;
+  text-shadow: 0 0 30px rgba(255, 255, 255, 0.25);
+}
+
+.ph-contact-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.ph-contact-chip {
+  color: #fff;
+  font-family: var(--pixel);
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  padding: 10px 18px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 12px;
+  transition: background 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.ph-contact-chip:hover,
+.ph-contact-chip:focus-visible {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.45);
+  box-shadow: 0 0 22px rgba(255, 255, 255, 0.14);
+}
+
+.scene-contact small {
+  color: rgba(255, 255, 255, 0.42);
+  font-family: var(--pixel);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sv-wave {
+    display: none;
+  }
+}
+
+@media (max-width: 760px) {
+  .ph-contact-links {
+    flex-direction: column;
+    width: 100%;
+  }
+  .ph-contact-chip {
+    text-align: center;
+  }
+}
+
+/* —— 站点 global 减弱动态会把所有动画压到 0.01ms；内容动效按用户体验要求保留 —— */
+@media (prefers-reduced-motion: reduce) {
+  .film-track {
+    animation-duration: 44s !important;
+    animation-iteration-count: infinite !important;
+  }
+  .solar-stage .planet,
+  .solar-stage .sun {
+    animation-duration: 44s !important;
+    animation-iteration-count: infinite !important;
+  }
+  .solar-stage::after {
+    animation-duration: 60s !important;
+    animation-iteration-count: infinite !important;
+  }
+  .space-deep {
+    animation-duration: 300s !important;
+    animation-iteration-count: infinite !important;
+  }
+  .ph-contact-chip,
+  .cinema-arrow {
+    animation: none !important;
+  }
+}
+
+/* ============================================================
+   WebGL2 shader Hero（鼠标联动 13 层效果）
+   ============================================================ */
+.hero-gl {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  pointer-events: none;
+  /* WebGL2 不可用时的兜底渐变 */
+  background:
+    radial-gradient(120% 90% at 50% 42%, #0b1226 0%, #05070f 58%, #01020a 100%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-gl {
+    animation: none;
+  }
+}
+
+/* ============================================================
+   鼠标追踪光球（mousefx）
+   ============================================================ */
+.mousefx {
+  position: fixed;
+  inset: 0;
+  z-index: 55;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mousefx { display: none; }
+}
+
+/* ============================================================
+   月亮相位页（Neo-retro 像素太空）—— 星系场景重构
+   ============================================================ */
+.moon-page {
+  background: #000;
+  /* 复古像素光标 */
+  cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M1 1 L12 6 L8 8 L6 12 Z' fill='white' stroke='black' stroke-width='1.4'/></svg>") 1 1, crosshair;
+  user-select: none;
+}
+
+.moon-page-title {
+  font-size: clamp(15px, 2vw, 22px);
+  letter-spacing: 0.2em;
+  color: rgba(255, 255, 255, 0.88);
+  text-shadow: 2px 2px 0 #000;
+  white-space: nowrap;
+  transform: translateX(-50%);
+}
+
+/* 舞台：90px 透视 + 轻微俯仰，3D 纵深 */
+.moon-stage {
+  position: absolute;
+  left: 50%;
+  top: 46%;
+  transform: translate(-58%, -50%);
+  width: min(62vh, 540px);
+  height: min(62vh, 540px);
+  perspective: 900px;
+}
+
+.moon-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+  border-radius: 50%;
+  image-rendering: pixelated;
+  mix-blend-mode: screen;
+  transform: rotateX(3deg);
+}
+
+/* 右侧内容面板 */
+.moon-panel {
+  position: absolute;
+  top: 50%;
+  right: max(28px, 4vw);
+  transform: translateY(-50%);
+  width: min(460px, 42vw);
+  max-height: calc(100svh - 150px);
+  display: flex;
+  flex-direction: column;
+  padding: 26px 28px;
+  overflow: hidden;
+  background: rgba(10, 10, 12, 0.86);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 18px;
+  backdrop-filter: blur(8px);
+  transition: opacity 300ms ease, transform 300ms var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1));
+}
+
+.moon-panel.is-switching {
+  opacity: 0.3;
+  transform: translateY(-50%) translateY(10px);
+}
+
+.moon-panel-code {
+  margin: 0 0 10px;
+  color: rgba(255, 255, 255, 0.45);
+  font-family: var(--pixel);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+}
+
+.moon-panel-title {
+  margin: 0 0 14px;
+  color: #fff;
+  font-family: var(--pixel);
+  font-weight: 400;
+  font-size: clamp(24px, 3vw, 40px);
+  letter-spacing: 0.06em;
+  text-shadow: 3px 3px 0 #000;
+}
+
+.moon-panel-lead {
+  margin: 0 0 14px;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 13px;
+  line-height: 1.85;
+  letter-spacing: 0.03em;
+}
+
+.moon-panel-body {
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+  padding-right: 4px;
+}
+
+/* 底部 8 月相图标 */
+.moon-icons {
+  position: absolute;
+  left: 50%;
+  bottom: 22px;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 10px;
+  z-index: 3;
+}
+
+.moon-icon {
+  width: 46px;
+  height: 46px;
+  padding: 0;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 10px;
+  cursor: pointer;
+  image-rendering: pixelated;
+  transition: border-color 200ms ease, box-shadow 200ms ease, background 200ms ease;
+}
+
+.moon-icon canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+  image-rendering: pixelated;
+}
+
+.moon-icon:hover {
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.moon-icon.is-active {
+  border-color: #fff;
+  box-shadow: 0 0 14px rgba(255, 255, 255, 0.35), inset 0 0 10px rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* 字符洗牌 */
+.shuffle-char {
+  display: inline-block;
+  will-change: transform, opacity;
+}
+
+@media (max-width: 900px) {
+  .moon-stage {
+    left: 50%;
+    transform: translate(-50%, -50%);
+    top: 40%;
+    width: min(54vh, 78vw);
+    height: min(54vh, 78vw);
+  }
+  .moon-panel {
+    right: 50%;
+    top: auto;
+    bottom: 84px;
+    transform: translateX(50%);
+    width: min(420px, 92vw);
+  }
+  .moon-panel.is-switching {
+    transform: translateX(50%) translateY(10px);
+  }
+  .moon-icons {
+    bottom: 14px;
+    gap: 6px;
+  }
+  .moon-icon {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+/* ============================================================
+   月相页 v2：右侧简历卡 + 月亮下一行朴素说明
+   ============================================================ */
+/* 右侧简历卡（固定内容，跟随月相切换的只有月亮和说明） */
+.moon-resume {
+  width: min(400px, 38vw);
+  max-height: calc(100svh - 150px);
+}
+
+.moon-resume-list {
+  list-style: none;
+  margin: 4px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.moon-resume-item {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.03);
+  transition: background 180ms ease, border-color 180ms ease;
+}
+
+.moon-resume-item:hover {
+  background: rgba(255, 255, 255, 0.09);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.moon-resume-a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 11px 14px;
+  font-family: var(--pixel);
+  font-size: 12.5px;
+  letter-spacing: 0.06em;
+}
+
+.moon-resume-name {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.moon-resume-arrow {
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.moon-resume-item:hover .moon-resume-arrow {
+  color: #fff;
+}
+
+.moon-resume-note {
+  margin: 14px 0 0;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+/* 月亮下方一行说明（随月相切换淡入淡出） */
+.moon-caption {
+  position: absolute;
+  left: 50%;
+  top: calc(46% + min(31vh, 270px) + 14px);
+  transform: translateX(-58%);
+  width: min(560px, 52vw);
+  text-align: center;
+  transition: opacity 300ms ease, transform 300ms var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1));
+}
+
+.moon-caption.is-switching {
+  opacity: 0.15;
+  transform: translateX(-58%) translateY(8px);
+}
+
+.moon-phase-name {
+  margin: 0 0 8px;
+  color: rgba(255, 255, 255, 0.5);
+  font-family: var(--pixel);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+}
+
+.moon-phase-line {
+  margin: 0;
+  color: #fff;
+  font-size: clamp(15px, 1.7vw, 20px);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-shadow: 2px 2px 0 #000;
+}
+
+
+
+/* 类目面板（月相页 v3：右侧=该类目项目经历） */
+.moon-panel {
+  width: min(470px, 42vw);
+}
+
+.moon-panel.is-switching {
+  opacity: 0.25;
+  transform: translateY(-50%) translateY(10px);
+}
+
+.moon-panel-lead {
+  margin: 0 0 14px;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 13px;
+  line-height: 1.85;
+  letter-spacing: 0.03em;
+}
+
+.moon-panel-body {
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+  padding-right: 4px;
+}
+
+/* 点大月亮进二级页 */
+.moon-clickable {
+  cursor: pointer;
+}
+
+.moon-open-hint {
+  margin: 12px 0 0;
+  color: rgba(255, 255, 255, 0.45);
+  font-family: var(--pixel);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  transition: opacity 250ms ease;
+}
+
+/* 月相图标跟随月亮靠左 */
+.moon-icons {
+  left: calc(50% - 58% / 2);
+  transform: translateX(calc(-50% + 4vw));
+  bottom: 26px;
+}
+
+/* ============================================================
+   月相页 · 移动端纵向布局（月亮 → 说明 → 图标 → 底部内容面板）
+   ============================================================ */
+@media (max-width: 900px) {
+  .moon-page-title {
+    top: 7svh;
+    font-size: 14px;
+  }
+
+  .moon-stage {
+    left: 50%;
+    top: 24svh;
+    transform: translate(-50%, -50%);
+    width: min(26svh, 60vw);
+    height: min(26svh, 60vw);
+  }
+
+  .moon-caption {
+    top: calc(24svh + min(13svh, 30vw) + 10px);
+    transform: translateX(-50%);
+    width: 94vw;
+  }
+
+  .moon-caption.is-switching {
+    transform: translateX(-50%) translateY(8px);
+  }
+
+  .moon-phase-line {
+    font-size: 15px;
+  }
+
+  .moon-open-hint {
+    font-size: 10px;
+    margin-top: 8px;
+  }
+
+  .moon-icons {
+    left: 50%;
+    bottom: calc(38svh + 12px);
+    transform: translateX(-50%);
+    gap: 7px;
+    max-width: 94vw;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .moon-icon {
+    width: 38px;
+    height: 38px;
+  }
+
+  /* 底部内容面板：通栏抽屉 */
+  .moon-panel {
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: auto;
+    width: auto;
+    max-height: 36svh;
+    transform: none;
+    border-radius: 18px 18px 0 0;
+    padding: 16px 18px calc(16px + env(safe-area-inset-bottom));
+    background: rgba(8, 8, 10, 0.94);
+  }
+
+  .moon-panel.is-switching {
+    transform: translateY(10px);
+  }
+
+  .moon-panel-title {
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+
+  .moon-panel-lead {
+    font-size: 12.5px;
+    margin-bottom: 10px;
+  }
+}
+
+/* ============================================================
+   月相面板作用域样式：让 pb-* 组件在 .moon-panel-body 里正常排版
+   ============================================================ */
+.moon-panel-body .pb-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.moon-panel-body .pb-list li {
+  padding: 12px 14px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-sm, 12px);
+}
+
+.moon-panel-body .pb-list strong {
+  display: block;
+  color: #fff;
+  font-size: 14px;
+  letter-spacing: 0.02em;
+  margin-bottom: 4px;
+}
+
+.moon-panel-body .pb-list span {
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 12.5px;
+  line-height: 1.7;
+  display: block;
+}
+
+.moon-panel-body .pb-links {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.moon-panel-body .pb-links a {
+  color: #fff;
+  font-family: var(--pixel);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  padding: 4px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 8px;
+  transition: background 160ms ease, border-color 160ms ease;
+}
+
+.moon-panel-body .pb-links a:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.moon-panel-body .pb-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+}
+
+.moon-panel-body .pb-actions a {
+  color: #fff;
+  font-family: var(--pixel);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  padding: 9px 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  transition: background 180ms ease, color 180ms ease, border-color 180ms ease;
+}
+
+.moon-panel-body .pb-actions a:hover {
+  background: #fff;
+  color: #000;
+  border-color: #fff;
+}
+
+.moon-panel-body .pb-actions .pb-ghost {
+  color: rgba(255, 255, 255, 0.75);
+  border-color: rgba(255, 255, 255, 0.22);
+}
+
+.moon-panel-body .pb-actions .pb-ghost:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.moon-panel-body .pb-profile {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  margin-bottom: 4px;
+}
+
+.moon-panel-body .pb-photo {
+  flex: none;
+  width: 104px;
+  height: 128px;
+  object-fit: cover;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.moon-panel-body .pb-profile-text p {
+  margin: 0 0 8px;
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 13px;
+  line-height: 1.8;
+}
+
+.moon-panel-body .pb-profile-text .pb-profile-note {
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 12px;
+}
+
+.moon-panel-body .pb-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.moon-panel-body .pb-timeline article {
+  display: flex;
+  gap: 14px;
+}
+
+.moon-panel-body .pb-timeline article > p {
+  flex: none;
+  width: 74px;
+  color: rgba(255, 255, 255, 0.5);
+  font-family: var(--pixel);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  margin: 2px 0 0;
+  text-align: left;
+}
+
+.moon-panel-body .pb-timeline h3 {
+  margin: 0 0 4px;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.moon-panel-body .pb-timeline span {
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 12.5px;
+  line-height: 1.7;
+  display: block;
+}
+
+/* ============================================================
+   月球页 · 地球地平线（从地面仰望月球）
+   ============================================================ */
+.moon-planet {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: min(34vh, 320px);
+  z-index: 1;
+  pointer-events: none;
+  image-rendering: pixelated;
+}
+
+/* 月亮稍微抬高，悬在地平线上方 */
+.moon-stage {
+  top: 40%;
+}
+
+.moon-caption {
+  top: calc(40% + min(31vh, 270px) + 14px);
+}
+
+@media (max-width: 900px) {
+  .moon-planet {
+    height: min(26svh, 240px);
+    z-index: 0;
+  }
+  .moon-stage {
+    top: 21svh;
+  }
+  .moon-caption {
+    top: calc(21svh + min(13svh, 30vw) + 10px);
+  }
+}
+
+/* 说明行置于地球地平线之上 */
+.moon-caption {
+  z-index: 3;
+}
+
+/* 项目卡片整卡可点（覆盖层链接 + 上方胶囊保持可点） */
+.moon-panel-body .pb-list li {
+  position: relative;
+  transition: background 180ms ease, border-color 180ms ease;
+}
+
+.moon-panel-body .pb-list li:hover {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+.moon-panel-body .pb-card-open {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: 12px;
+}
+
+.moon-panel-body .pb-links {
+  position: relative;
+  z-index: 2;
+}
+
+/* ============================================================
+   月球页 · 回归太空视角（移除地球地平线）
+   ============================================================ */
+.moon-stage {
+  top: 45%;
+}
+
+.moon-caption {
+  top: calc(45% + min(31vh, 270px) + 14px);
+}
+
+@media (max-width: 900px) {
+  .moon-stage {
+    top: 24svh;
+  }
+  .moon-caption {
+    top: calc(24svh + min(13svh, 30vw) + 10px);
+  }
+}
+
+/* ============================================================
+   第二屏（作品胶片）美化：小月亮 + 玻璃卡 + 像素时间线
+   ============================================================ */
+.odyssey-moon {
+  position: absolute;
+  right: 12%;
+  top: 18%;
+  width: 150px;
+  height: 150px;
+  z-index: 1;
+  image-rendering: pixelated;
+  pointer-events: none;
+  animation: ody-bob 14s ease-in-out infinite alternate;
+  opacity: 0.95;
+}
+
+@keyframes ody-bob {
+  from { transform: translateY(-6px); }
+  to { transform: translateY(8px); }
+}
+
+.odyssey-copy {
+  position: absolute;
+  z-index: 2;
+  top: 50%;
+  right: clamp(24px, 7vw, 110px);
+  transform: translateY(-50%);
+  max-width: 460px;
+  padding: 28px 30px;
+  background: rgba(10, 10, 14, 0.62);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 18px;
+  backdrop-filter: blur(8px);
+}
+
+.odyssey-copy .ph-foot-kicker {
+  margin: 0 0 8px;
+  font-size: 12px;
+}
+
+.odyssey-title {
+  margin: 0 0 4px;
+  color: #fff;
+  font-family: var(--pixel);
+  font-weight: 400;
+  font-size: clamp(30px, 3.6vw, 46px);
+  letter-spacing: 0.1em;
+  text-shadow: 3px 3px 0 #000;
+}
+
+.odyssey-since {
+  margin: 0 0 20px;
+  color: rgba(255, 255, 255, 0.55);
+  font-family: var(--pixel);
+  font-size: 13px;
+  letter-spacing: 0.18em;
+}
+
+/* 像素时间线 */
+.odyssey-timeline {
+  display: flex;
+  align-items: flex-start;
+  gap: 0;
+  margin: 0 0 18px;
+}
+
+.ody-node {
+  flex: 1;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-align: center;
+  min-width: 0;
+}
+
+.ody-dot {
+  width: 9px;
+  height: 9px;
+  background: #fff;
+  border-radius: 2px;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
+  position: relative;
+  z-index: 1;
+}
+
+.ody-node:not(:first-child)::before {
+  content: "";
+  position: absolute;
+  top: 4px;
+  left: -50%;
+  right: 50%;
+  height: 2px;
+  background: repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.5) 0 5px, transparent 5px 10px);
+}
+
+.ody-node strong {
+  color: #fff;
+  font-family: var(--pixel);
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  text-shadow: 2px 2px 0 #000;
+}
+
+.ody-node small {
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.odyssey-lines {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.9);
+  font-family: var(--pixel);
+  font-size: clamp(12px, 1.25vw, 14px);
+  line-height: 2;
+  letter-spacing: 0.1em;
+}
+
+.odyssey-lines .en {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+@media (max-width: 900px) {
+  .odyssey-moon {
+    right: 8%;
+    top: 10%;
+    width: 90px;
+    height: 90px;
+  }
+  .odyssey-copy {
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+    width: min(420px, 92vw);
+    max-width: 92vw;
+    padding: 20px 18px;
+  }
+  .ody-node small {
+    font-size: 10px;
+  }
+}
+
+/* ============================================================
+   右侧富内容（所有内容就地呈现，不跳转）
+   ============================================================ */
+.moon-panel {
+  width: min(560px, 46vw);
+}
+
+.moon-panel-body .pb-rich {
+  display: block;
+}
+
+.moon-panel-body .pb-rich-tag {
+  display: block;
+  color: rgba(255, 255, 255, 0.6);
+  font-family: var(--pixel);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  margin-bottom: 8px;
+}
+
+.moon-panel-body .pb-shot-row {
+  display: flex;
+  gap: 8px;
+  margin: 10px 0 10px;
+  flex-wrap: wrap;
+}
+
+.moon-panel-body .pb-shot {
+  width: 128px;
+  height: 84px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  image-rendering: pixelated;
+}
+
+.moon-panel-body .pb-bullets {
+  list-style: none;
+  margin: 6px 0 10px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.moon-panel-body .pb-bullets li {
+  padding: 0;
+  margin: 0;
+  background: none;
+  border: none;
+  border-radius: 0;
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 12.5px;
+  line-height: 1.6;
+}
+
+.moon-panel-body .pb-bullets li::before {
+  content: "▸";
+  margin-right: 6px;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.moon-panel-body .moon-mini-head {
+  margin: 16px 0 8px;
+  color: rgba(255, 255, 255, 0.45);
+  font-family: var(--pixel);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+}
+
+@media (max-width: 900px) {
+  .moon-panel {
+    width: auto;
+  }
+  .moon-panel-body .pb-shot {
+    width: 110px;
+    height: 72px;
+  }
+}
+
+/* ============================================================
+   鼠标色彩跟随（COLORFOLLOW）
+   ============================================================ */
+.cursor-color {
+  position: fixed;
+  inset: 0;
+  z-index: 34;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  mix-blend-mode: color;
+}
+
+.cursor-glow {
+  position: fixed;
+  inset: 0;
+  z-index: 35;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cursor-color,
+  .cursor-glow {
+    display: none;
+  }
+}
+
+/* 第二屏小月亮：加冷色光晕（呼应色彩主题） */
+.odyssey-moon {
+  filter: drop-shadow(0 0 16px rgba(120, 170, 255, 0.55)) drop-shadow(0 0 44px rgba(150, 120, 255, 0.25));
+}
+
+/* 第二屏玻璃卡：贴一道彩色渐晕 */
+.odyssey-copy::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background:
+    radial-gradient(120% 90% at 12% 0%, rgba(120, 170, 255, 0.10), transparent 55%),
+    radial-gradient(120% 100% at 90% 100%, rgba(255, 150, 210, 0.08), transparent 55%);
+}
+
+/* 月相面板：链接/统计的彩味点缀（仅 hover 微光） */
+.moon-panel-body .pb-links a:hover {
+  box-shadow: 0 0 12px rgba(140, 180, 255, 0.25);
+}
+
+.ph-contact-chip:hover,
+.ph-footer a:hover {
+  color: #dfe8ff;
+}
+
+/* 设计思路 & 项目介绍 */
+.ody-about {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px dashed rgba(255, 255, 255, 0.18);
+}
+
+.ody-about-head {
+  margin: 0 0 6px;
+  color: rgba(255, 255, 255, 0.45);
+  font-family: var(--pixel);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+}
+
+.ody-about p {
+  margin: 0 0 6px;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 12px;
+  line-height: 1.8;
+}
+
+/* 手机端第二屏再优化：卡片与时间线收窄 */
+@media (max-width: 900px) {
+  .odyssey-copy {
+    padding: 16px 14px;
+  }
+  .odyssey-title {
+    font-size: 26px;
+  }
+  .odyssey-timeline {
+    margin-bottom: 12px;
+  }
+  .ody-node small {
+    font-size: 9px;
+  }
+  .ody-node strong {
+    font-size: 11px;
+  }
+  .ody-node:not(:first-child)::before {
+    left: -60%;
+    right: 60%;
+  }
+  .ody-about p {
+    font-size: 11px;
+  }
+  .moon-page-title {
+    white-space: normal;
+    text-align: center;
+  }
+}
+
+/* ============================================================
+   UX 修补 + 质感增强（v2026-08-29）
+   1) 桌面端底部说明只保留“点大月亮”提示（相位名/描述与右侧
+      面板重复，见 applyPhase 的 line/lead 同源写入）
+   2) 移动端：标题抬到月亮上方并提高层级，月亮略缩右移让位
+   3) 场景圆点导航（scroll-spy，参考高分作品集站的固定页点）
+   4) 面板滚动提示 + 键盘焦点可见性 + 细滚动条
+   ============================================================ */
+
+/* ---- 1) 桌面端去重：底部说明只留操作提示 ---- */
+@media (min-width: 901px) {
+  .moon-caption .moon-phase-name,
+  .moon-caption .moon-phase-line {
+    display: none;
+  }
+  .moon-open-hint {
+    margin-top: 0;
+  }
+  /* 说明与月亮左缘对齐（左对齐），右端永远够不到右侧面板 */
+  .moon-caption {
+    left: calc(50% - min(62vh, 540px) * 0.58);
+    transform: none;
+    width: auto;
+    white-space: nowrap;
+    text-align: left;
+  }
+  .moon-caption.is-switching {
+    transform: translateY(8px);
+  }
+}
+
+/* ---- 2) 移动端：标题不再被大月亮压住，月亮让出标题行 ---- */
+@media (max-width: 900px) {
+  .moon-page-title {
+    z-index: 5;
+    text-shadow: 2px 2px 0 #000;
+    width: max-content;
+    max-width: 96vw;
+  }
+  .moon-stage {
+    top: calc(28svh + 30px);
+    width: min(24svh, 56vw);
+    height: min(24svh, 56vw);
+  }
+  .moon-caption {
+    top: calc(28svh + 30px + min(12svh, 28vw) + 8px);
+  }
+  .moon-open-hint {
+    margin-top: 6px;
+    font-size: 10px;
+  }
+  /* 月相图标单行排列，避免与说明/抽屉打架 */
+  .moon-icons {
+    gap: 4px;
+    width: min(94vw, 360px);
+    flex-wrap: nowrap;
+    justify-content: center;
+  }
+  .moon-icon {
+    width: 34px;
+    height: 34px;
+    flex: 0 0 auto;
+  }
+}
+
+/* 矮屏手机：说明只留一句描述，保证与图标行有净空 */
+@media (max-width: 900px) and (max-height: 700px) {
+  .moon-caption .moon-phase-name,
+  .moon-caption .moon-open-hint {
+    display: none;
+  }
+  .moon-caption .moon-phase-line {
+    font-size: 13px;
+  }
+}
+
+/* ---- 3) 场景圆点导航 ---- */
+.sv-dots {
+  position: fixed;
+  right: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 10px 8px;
+  background: rgba(8, 8, 10, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  backdrop-filter: blur(6px);
+}
+
+.sv-dot {
+  position: relative;
+  width: 10px;
+  height: 10px;
+  padding: 0;
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 2px;
+  cursor: pointer;
+  transition: background 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+}
+
+.sv-dot:hover {
+  background: rgba(255, 255, 255, 0.55);
+  transform: scale(1.15);
+}
+
+.sv-dot.is-active {
+  background: #fff;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.65);
+  transform: scale(1.2);
+}
+
+.sv-dot-tip {
+  position: absolute;
+  right: 24px;
+  top: 50%;
+  transform: translateY(-50%) translateX(4px);
+  white-space: nowrap;
+  font-family: var(--pixel, monospace);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: rgba(255, 255, 255, 0.85);
+  background: rgba(8, 8, 10, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 6px;
+  padding: 4px 8px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 160ms ease, transform 160ms ease;
+}
+
+.sv-dot:hover .sv-dot-tip,
+.sv-dot:focus-visible .sv-dot-tip {
+  opacity: 1;
+  transform: translateY(-50%) translateX(0);
+}
+
+.sv-dot:focus-visible,
+.moon-icon:focus-visible,
+.panel-scroll-hint:focus-visible {
+  outline: 1px solid #fff;
+  outline-offset: 2px;
+}
+
+@media (max-width: 900px) {
+  .sv-dots {
+    right: 8px;
+    gap: 11px;
+    padding: 8px 6px;
+  }
+  .sv-dot {
+    width: 8px;
+    height: 8px;
+  }
+  .sv-dot-tip {
+    display: none;
+  }
+}
+
+/* ---- 4) 面板滚动提示 + 滚动条 + 聚焦态 ---- */
+.panel-scroll-hint {
+  position: absolute;
+  left: 50%;
+  bottom: 10px;
+  transform: translateX(-50%) translateY(6px);
+  padding: 5px 12px;
+  font-family: var(--pixel, monospace);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  color: rgba(255, 255, 255, 0.85);
+  background: rgba(8, 8, 10, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 999px;
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 200ms ease, transform 200ms ease;
+}
+
+.panel-scroll-hint.is-visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+  pointer-events: auto;
+}
+
+.moon-panel-body:focus-visible {
+  outline: 1px solid rgba(255, 255, 255, 0.55);
+  outline-offset: -2px;
+}
+
+.moon-panel-body::-webkit-scrollbar {
+  width: 6px;
+}
+
+.moon-panel-body::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.22);
+  border-radius: 999px;
+}
+
+.moon-panel-body::-webkit-scrollbar-track {
+  background: transparent;
+}
