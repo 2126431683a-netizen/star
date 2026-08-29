@@ -93,23 +93,58 @@
     flashes.push({ y: yy, t: 0 });
   }
 
+  /* ---- 方向流：粒子随“上下操作”整体改向 ----
+     flow ∈ [-1.4, 1.4]：+ 向上涌，- 向下流；操作后约 1.5s 衰减回
+     环境态（缓慢上飘）。场景切换（home）与普通页面滚动都会触发。 */
+  var flow = 0, flowTarget = 0;
+
+  window.__fx = {
+    pulse: function (dir) {
+      flowTarget = 1.4 * (dir >= 0 ? 1 : -1);
+    },
+    dbg: function () {
+      var n = 0, sum = 0;
+      for (var i = 0; i < parts.length; i++) { n++; sum += parts[i].vy + flow * 0.45; }
+      return { flow: +flow.toFixed(3), target: +flowTarget.toFixed(3), avgVy: n ? +(sum / n).toFixed(3) : 0, parts: n };
+    }
+  };
+
+  // 普通滚动页面：滚动方向 → 粒子方向（首页场景模式无原生滚动，由 SV 钩子驱动）
+  var lastScrollY = window.scrollY || 0, lastPulse = 0;
+  window.addEventListener('scroll', function () {
+    var y = window.scrollY || 0;
+    var dy = y - lastScrollY;
+    lastScrollY = y;
+    var now = performance.now();
+    if (Math.abs(dy) < 3 || now - lastPulse < 140) return;
+    lastPulse = now;
+    window.__fx.pulse(dy > 0 ? -1 : 1);
+  }, { passive: true });
+
   function step(dt) {
     ctx.clearRect(0, 0, W, H);
+
+    // 流向缓动 + 脉冲衰减（约 1.5s 回到环境态）
+    flow += (flowTarget - flow) * Math.min(1, dt * 0.005);
+    flowTarget *= Math.exp(-dt / 1500);
 
     for (var i = parts.length - 1; i >= 0; i--) {
       var p = parts[i];
       p.x += p.vx * dt * 0.06;
-      p.y += p.vy * dt * 0.06;
+      p.y += (p.vy + flow * 0.45) * dt * 0.06;
       if (p.life !== undefined) {
         p.life -= dt * 0.06;
-        if (p.life <= 0 || p.y < -10 || p.x < -10 || p.x > W + 10) {
+        if (p.life <= 0 || p.y < -10 || p.y > H + 10 || p.x < -10 || p.x > W + 10) {
           parts.splice(i, 1);
           continue;
         }
       }
-      // 尘埃/余烬飘出边界后重投（流动循环）
+      // 尘埃/余烬飘出边界后重投（流动循环：向上从底部回，向下从顶部回）
       if (p.y < -12) {
         p.y = H + 8;
+        p.x = rand(0, W);
+      } else if (p.y > H + 12) {
+        p.y = -8;
         p.x = rand(0, W);
       } else if (p.x < -12) p.x = W + 6;
       else if (p.x > W + 12) p.x = -6;
