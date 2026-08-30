@@ -16,13 +16,14 @@
   <script src="assets/libs/gsap.min.js" defer></script>
   <script src="assets/libs/MotionPathPlugin.min.js" defer></script>
   <script src="assets/site.js?v=2026-08-27-23" defer></script>
-  <script src="assets/home.js?v=2026-08-30-6" defer></script>
+  <script src="assets/home.js?v=2026-08-30-7" defer></script>
   <script src="assets/hero-gl.js?v=2026-08-28-19" defer></script>
   <script src="assets/mousefx.js?v=2026-08-28-20" defer></script>
 <link rel="stylesheet" href="assets/fx.css?v=2026-08-28-34">
-  <script src="assets/fx.js?v=2026-08-30-2" defer></script>
+  <script src="assets/fx.js?v=2026-08-30-4" defer></script>
 </head>
 <body data-page="home">
+  <script>/* 临时调试：捕获脚本错误 */window.__errs=[];addEventListener('error',function(e){window.__errs.push(e.message+' @ '+String(e.filename).split('/').pop()+':'+e.lineno+':'+e.colno);});</script>
   <a class="skip-link" href="#main">跳到主要内容</a>
 
   <header class="ph-header">
@@ -141,6 +142,19 @@
           <a class="ph-contact-chip" href="assets/陈黄勇_产品经理_系统策划_编导_简历.pdf" download>下载简历 PDF</a>
         </div>
         <small>© <span data-year>2026</span> 陈黄勇 · CHY.GALAXY —— 以像素为骨，以作品为星</small>
+      </div>
+
+      <button class="admin-entry" type="button" aria-label="内容编辑入口">编辑</button>
+      <div class="admin-gate" id="admin-gate" aria-hidden="true">
+        <div class="admin-gate-box">
+          <p class="admin-gate-title">内容编辑</p>
+          <input class="admin-gate-input" type="password" placeholder="输入管理密码" autocomplete="off">
+          <p class="admin-gate-err" role="alert"></p>
+          <div class="admin-gate-actions">
+            <button type="button" data-gate-cancel>取消</button>
+            <button type="button" class="admin-gate-ok" data-gate-ok>进入</button>
+          </div>
+        </div>
       </div>
     </footer>
 
