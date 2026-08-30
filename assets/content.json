@@ -177,6 +177,10 @@
       ],
       "links": [
         {
+          "text": "试玩 →",
+          "href": "game/kernel-panic/index.html"
+        },
+        {
           "text": "项目主页 →",
           "href": "kernel-panic.html"
         },
