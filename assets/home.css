@@ -2219,3 +2219,105 @@ body[data-page="home"].scene-mode .scene-flow > footer {
 .moon-panel-body::-webkit-scrollbar-track {
   background: transparent;
 }
+
+/* ---- 联系页「编辑」入口 + 密码门 ---- */
+.admin-entry {
+  position: absolute;
+  left: 26px;
+  bottom: 24px;
+  padding: 6px 14px;
+  font-family: var(--pixel);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  color: rgba(255, 255, 255, 0.28);
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: color 200ms ease, border-color 200ms ease;
+}
+
+.admin-entry:hover {
+  color: rgba(255, 255, 255, 0.85);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.admin-gate {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(6px);
+}
+
+.admin-gate.is-open {
+  display: flex;
+}
+
+.admin-gate-box {
+  width: min(360px, 88vw);
+  padding: 26px 28px;
+  background: rgba(10, 10, 12, 0.96);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 14px;
+}
+
+.admin-gate-title {
+  margin: 0 0 14px;
+  font-family: var(--pixel);
+  font-size: 14px;
+  letter-spacing: 0.2em;
+  color: #fff;
+}
+
+.admin-gate-input {
+  width: 100%;
+  padding: 10px 12px;
+  font: inherit;
+  letter-spacing: 0.3em;
+  color: #fff;
+  background: #101016;
+  border: 1px solid #33333d;
+  border-radius: 8px;
+}
+
+.admin-gate-input:focus {
+  outline: 1px solid rgba(255, 255, 255, 0.55);
+}
+
+.admin-gate-err {
+  min-height: 20px;
+  margin: 8px 0 0;
+  color: #e88;
+  font-size: 12px;
+}
+
+.admin-gate-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 6px;
+}
+
+.admin-gate-actions button {
+  padding: 7px 16px;
+  font: inherit;
+  font-size: 13px;
+  color: #eee;
+  background: #15151b;
+  border: 1px solid #555;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.admin-gate-actions button:hover { border-color: #aaa; }
+
+.admin-gate-actions .admin-gate-ok {
+  background: #f2f2f2;
+  color: #111;
+  border-color: #f2f2f2;
+  font-weight: 700;
+}
