@@ -26,9 +26,9 @@ function send(res, code, body, type = 'application/json; charset=utf-8') {
 const server = createServer(async (req, res) => {
   const url = new URL(req.url, 'http://localhost');
   try {
-    // 管理界面
-    if (url.pathname === '/' || url.pathname === '/admin') {
-      const html = await readFile(join(ROOT, 'admin', 'admin.html'), 'utf8');
+    // 管理界面（根目录 admin.html，同时由 GitHub Pages 在 /star/admin.html 提供）
+    if (url.pathname === '/' || url.pathname === '/admin' || url.pathname === '/admin.html') {
+      const html = await readFile(join(ROOT, 'admin.html'), 'utf8');
       return send(res, 200, html, 'text/html; charset=utf-8');
     }
 

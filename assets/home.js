@@ -1649,6 +1649,25 @@
             ph.body = function () { return html; };
           }
         });
+        // 「项目管理」：项目面板由结构化数组构建（后台可增删项目）
+        if (c.projects && c.projects.length && window.__moonx.phases[2]) {
+          var listHtml = '<ul class="pb-list">' + c.projects.map(function (p4) {
+            var imgs = (p4.images || []).map(function (s4) {
+              return '<img class="pb-shot" src="' + s4 + '" alt="' + (p4.name || '') + '">';
+            }).join('');
+            var bl = (p4.bullets || []).map(function (b) { return '<li>' + b + '</li>'; }).join('');
+            var links = (p4.links || []).map(function (l2) {
+              return '<a href="' + l2.href + '" target="' + (l2.href.indexOf('.pdf') >= 0 ? '_blank' : '_self') + '" rel="noopener">' + l2.text + '</a>';
+            }).join('');
+            return '<li class="pb-rich"><a class="pb-card-open" href="' + (p4.href || '#') + '" aria-label="' + (p4.name || '') + '"></a><strong>' + (p4.name || '') + '</strong>' +
+              '<span class="pb-rich-tag">' + (p4.tag || '') + '</span>' +
+              '<span class="pb-shot-row">' + imgs + '</span>' +
+              '<ul class="pb-bullets">' + bl + '</ul>' +
+              (links ? '<span class="pb-links">' + links + '</span>' : '') + '</li>';
+          }).join('') + '</ul>';
+          var ph2 = window.__moonx.phases[2];
+          ph2.body = function () { return listHtml; };
+        }
         if (window.__moonx.refresh) window.__moonx.refresh();
       }
 

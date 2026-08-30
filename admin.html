@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CHY.GALAXY · 内容管理后台</title>
+<style>
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: #060608; color: #eee;
+    font-family: "Fusion Pixel 12px Mono zh_hans", Consolas, "Microsoft YaHei", monospace;
+    font-size: 14px; line-height: 1.7;
+  }
+  header {
+    position: sticky; top: 0; z-index: 10;
+    display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+    padding: 14px 22px; background: rgba(10,10,14,.96); border-bottom: 1px solid #2a2a30;
+  }
+  header h1 { font-size: 16px; margin: 0; letter-spacing: .12em; }
+  .badge { font-size: 11px; padding: 2px 10px; border-radius: 999px; border: 1px solid #4a7a55; color: #8fd6a0; letter-spacing: .1em; }
+  .badge.err { border-color: #a55; color: #e89; }
+  header .sp { flex: 1; }
+  button {
+    font: inherit; padding: 8px 16px; cursor: pointer; border-radius: 8px;
+    border: 1px solid #555; background: #15151b; color: #eee;
+  }
+  button:hover { border-color: #aaa; }
+  button.primary { background: #f2f2f2; color: #111; border-color: #f2f2f2; font-weight: 700; }
+  button.danger { border-color: #7a3a3a; color: #e8a; }
+  button.small { padding: 3px 10px; font-size: 12px; }
+  button:disabled { opacity: .5; cursor: wait; }
+  a { color: #9db8e8; }
+  main { max-width: 980px; margin: 0 auto; padding: 20px 22px 90px; }
+  details { border: 1px solid #26262e; border-radius: 12px; margin: 14px 0; background: #0c0c10; }
+  summary { cursor: pointer; padding: 12px 18px; font-weight: 700; letter-spacing: .08em; color: #ddd; }
+  summary:hover { color: #fff; }
+  .body { padding: 6px 18px 18px; }
+  label { display: block; margin: 14px 0 4px; color: #9a9aa4; font-size: 12px; letter-spacing: .06em; }
+  input[type=text], textarea {
+    width: 100%; background: #101016; color: #eee; border: 1px solid #33333d;
+    border-radius: 8px; padding: 8px 10px; font: inherit;
+  }
+  textarea { min-height: 84px; resize: vertical; line-height: 1.6; }
+  textarea.code, input.code { font-family: Consolas, monospace; font-size: 13px; }
+  .hint { color: #77777f; font-size: 12px; margin-top: 2px; }
+  .row { display: flex; gap: 12px; }
+  .row > * { flex: 1; }
+  .proj { border: 1px solid #222229; border-radius: 10px; padding: 4px 14px 14px; margin: 12px 0; background: #0a0a0e; }
+  .proj-head { display: flex; align-items: center; gap: 8px; margin-top: 10px; }
+  .proj-head strong { flex: 1; color: #cfcfd6; letter-spacing: .05em; }
+  .status {
+    position: fixed; left: 50%; bottom: 18px; transform: translateX(-50%);
+    max-width: 92vw; padding: 10px 18px; border-radius: 10px; font-size: 13px;
+    background: #101016; border: 1px solid #3a3a44; box-shadow: 0 6px 30px rgba(0,0,0,.6);
+    white-space: pre-wrap; display: none; z-index: 20;
+  }
+  .status.ok { border-color: #3f7f4f; }
+  .status.err { border-color: #a33; }
+  .loading { color: #888; padding: 30px 0; text-align: center; }
+  .setup { max-width: 640px; margin: 40px auto; border: 1px solid #26262e; border-radius: 14px; padding: 24px 28px; background: #0c0c10; }
+  .setup h2 { margin: 0 0 6px; }
+  .setup ol { color: #9a9aa4; font-size: 13px; padding-left: 18px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>CHY.GALAXY · 内容管理后台</h1>
+  <span class="badge" id="mode-badge">…</span>
+  <span class="sp"></span>
+  <span id="auth-area"></span>
+  <a href="./" target="_blank">打开网站</a>
+  <button id="btn-reload" type="button">重新加载</button>
+  <button id="btn-save" type="button">仅保存</button>
+  <button id="btn-push" type="button" class="primary">保存并推送上线</button>
+</header>
+
+<main id="app"><p class="loading">正在初始化…</p></main>
+<div class="status" id="status"></div>
+
+<script>
+/* ================================================================
+   CHY.GALAXY 内容后台（双模式）
+   · 本地模式：node admin.mjs 后从 http://localhost:8642 打开
+   · 在线模式：GitHub Pages 上打开（如 /star/admin.html），
+     通过 GitHub Contents API 直接读写仓库里的 assets/content.json
+   ================================================================ */
+const IS_LOCAL = ['localhost', '127.0.0.1'].includes(location.hostname) && location.port === '8642';
+const MODE = IS_LOCAL ? 'local' : 'cloud';
+
+const APP = document.getElementById('app');
+const STATUS = document.getElementById('status');
+const BADGE = document.getElementById('mode-badge');
+const AUTH_AREA = document.getElementById('auth-area');
+const LS_CFG = 'chy_admin_cfg', SS_TOK = 'chy_admin_tok';
+
+let content = null, cloudSha = null, cloudApi = null;
+
+function show(msg, ok) {
+  STATUS.textContent = msg;
+  STATUS.className = 'status ' + (ok ? 'ok' : 'err');
+  STATUS.style.display = 'block';
+  clearTimeout(show._t);
+  show._t = setTimeout(() => { STATUS.style.display = 'none'; }, ok ? 6000 : 15000);
+}
+const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
+
+/* ---------------- 云端：配置 / 登录 / API ---------------- */
+function cfg() {
+  let c = {};
+  try { c = JSON.parse(localStorage.getItem(LS_CFG) || '{}'); } catch {}
+  if (!c.owner || !c.repo) {
+    const m = location.hostname.match(/^([a-z0-9-]+)\.github\.io$/i);
+    if (m) {
+      c.owner = c.owner || m[1];
+      const seg = location.pathname.split('/').filter(Boolean);
+      c.repo = c.repo || (seg[0] || (m[1] + '.github.io'));
+      c.branch = c.branch || 'main';
+    }
+  }
+  return c;
+}
+function saveCfg(c) { localStorage.setItem(LS_CFG, JSON.stringify(c)); }
+
+function b64u(bytes) { let s = ''; bytes.forEach(b => s += String.fromCharCode(b)); return btoa(s).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''); }
+function randVerifier() { const b = new Uint8Array(32); crypto.getRandomValues(b); return b64u(b); }
+async function challengeOf(v) { return b64u(new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(v)))); }
+const b64utf8 = (s) => btoa(String.fromCharCode(...new TextEncoder().encode(s)));
+function b64decodeUtf8(b64) {
+  const bin = atob(b64.replace(/\n/g, ''));
+  const bytes = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  return new TextDecoder().decode(bytes);
+}
+
+function ghHeaders(tok) {
+  return { 'Authorization': 'Bearer ' + tok, 'Accept': 'application/vnd.github+json', 'Content-Type': 'application/json' };
+}
+
+async function startOAuth() {
+  const c = cfg();
+  if (!c.clientId) return show('请先填写 OAuth App 的 Client ID', false);
+  const verifier = randVerifier();
+  sessionStorage.setItem('chy_pkce', JSON.stringify({ verifier, state: String(Math.random()) }));
+  const redirect = location.origin + location.pathname;
+  const url = 'https://github.com/login/oauth/authorize?client_id=' + encodeURIComponent(c.clientId) +
+    '&redirect_uri=' + encodeURIComponent(redirect) +
+    '&scope=' + encodeURIComponent('repo') +
+    '&state=' + encodeURIComponent(JSON.parse(sessionStorage.getItem('chy_pkce')).state) +
+    '&code_challenge=' + (await challengeOf(verifier)) +
+    '&code_challenge_method=S256&allow_signup=true';
+  location.href = url;
+}
+
+async function finishOAuth() {
+  const q = new URLSearchParams(location.search);
+  const code = q.get('code'), state = q.get('state');
+  if (!code) return false;
+  const saved = JSON.parse(sessionStorage.getItem('chy_pkce') || 'null');
+  history.replaceState(null, '', location.pathname);
+  if (!saved || saved.state !== state) { show('授权回调校验失败，请重试', false); return true; }
+  const c = cfg();
+  try {
+    const r = await fetch('https://github.com/login/oauth/access_token', {
+      method: 'POST',
+      headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+      body: JSON.stringify({ client_id: c.clientId, code, redirect_uri: location.origin + location.pathname, code_verifier: saved.verifier })
+    });
+    const j = await r.json();
+    if (!j.access_token) throw new Error(j.error_description || '未取得 token');
+    sessionStorage.setItem(SS_TOK, j.access_token);
+    show('GitHub 授权成功', true);
+  } catch (e) { show('授权失败：' + String(e.message || e), false); }
+  return true;
+}
+
+function logoutCloud() { sessionStorage.removeItem(SS_TOK); location.reload(); }
+
+async function cloudLoad() {
+  const c = cfg();
+  const tok = sessionStorage.getItem(SS_TOK);
+  if (!tok) return { needAuth: true };
+  const r = await fetch(`https://api.github.com/repos/${c.owner}/${c.repo}/contents/assets/content.json?ref=${c.branch}`, { headers: ghHeaders(tok) });
+  if (r.status === 401) return { needAuth: true, bad: true };
+  if (!r.ok) throw new Error('GitHub API ' + r.status);
+  const j = await r.json();
+  cloudSha = j.sha;
+  return { text: b64decodeUtf8(j.content) };
+}
+
+async function cloudSave(text) {
+  const c = cfg();
+  const tok = sessionStorage.getItem(SS_TOK);
+  const r = await fetch(`https://api.github.com/repos/${c.owner}/${c.repo}/contents/assets/content.json`, {
+    method: 'PUT', headers: ghHeaders(tok),
+    body: JSON.stringify({
+      message: '内容更新 ' + new Date().toLocaleString('zh-CN'),
+      content: b64utf8(text), sha: cloudSha, branch: c.branch
+    })
+  });
+  if (!r.ok) {
+    const j = await r.json().catch(() => ({}));
+    throw new Error('GitHub API ' + r.status + ' ' + (j.message || ''));
+  }
+  cloudSha = (await r.json()).content.sha;
+}
+
+/* ---------------- 表单构建 ---------------- */
+const getPath = (o, p) => p.split('.').reduce((a, k) => (a == null ? a : a[k]), o);
+function setPath(o, p, v) {
+  const ks = p.split('.');
+  const last = ks.pop();
+  ks.reduce((a, k) => a[k], o)[last] = v;
+}
+
+function field(label, path, value, opts = {}) {
+  const rows = opts.rows || 0;
+  const cls = opts.code ? ' class="code"' : '';
+  const hint = opts.hint ? `<div class="hint">${opts.hint}</div>` : '';
+  const ctrl = rows
+    ? `<textarea data-path="${path}"${cls} rows="${rows}">${esc(value)}</textarea>`
+    : `<input type="text" data-path="${path}" value="${esc(value)}">`;
+  return `<label>${label}</label>${ctrl}${hint}`;
+}
+
+function renderProjects() {
+  return content.projects.map((p, i) => `
+  <div class="proj" data-proj="${i}">
+    <div class="proj-head">
+      <strong>${i + 1}. ${esc(p.name || '未命名')}</strong>
+      <button class="small" type="button" data-act="up" data-i="${i}">↑</button>
+      <button class="small" type="button" data-act="down" data-i="${i}">↓</button>
+      <button class="small danger" type="button" data-act="del" data-i="${i}">删除</button>
+    </div>
+    <label>项目名称</label><input type="text" data-pk="${i}" data-k="name" value="${esc(p.name)}">
+    <label>标签（类型 · 引擎等）</label><input type="text" data-pk="${i}" data-k="tag" value="${esc(p.tag)}">
+    <label>详情页链接</label><input type="text" data-pk="${i}" data-k="href" value="${esc(p.href)}">
+    <label>截图路径（每行一张，对应 assets/portfolio/ 下文件）</label>
+    <textarea data-pk="${i}" data-k="images" rows="2" class="code">${esc((p.images || []).join('\n'))}</textarea>
+    <label>要点（每行一条）</label>
+    <textarea data-pk="${i}" data-k="bullets" rows="3">${esc((p.bullets || []).join('\n'))}</textarea>
+    <label>角标链接（每行「文字 | 链接」，如 PRD | assets/docs/xx.pdf）</label>
+    <textarea data-pk="${i}" data-k="links" rows="2" class="code">${esc((p.links || []).map(l => l.text + ' | ' + l.href).join('\n'))}</textarea>
+  </div>`).join('');
+}
+
+function render(c) {
+  let h = '';
+
+  h += `<details open><summary>页头 / 导航</summary><div class="body">`;
+  h += field('站名（左上角）', 'header.brand', c.header.brand);
+  ['项目终端', '关于我', '运营', '月亮手册'].forEach((n, i) => h += field(`导航 ${i + 1}（${n}）`, `header.nav.${i}`, c.header.nav[i]));
+  h += `</div></details>`;
+
+  h += `<details open><summary>首屏（着陆）</summary><div class="body">`;
+  h += field('小标（kicker）', 'hero.kicker', c.hero.kicker);
+  h += field('主标题 · 前半', 'hero.titleBefore', c.hero.titleBefore);
+  h += field('主标题 · 高亮部分', 'hero.titleHighlight', c.hero.titleHighlight);
+  h += field('身份行', 'hero.role', c.hero.role);
+  h += field('Game builder 小标', 'hero.builderKicker', c.hero.builderKicker);
+  h += field('Game builder 说明（支持 &lt;br&gt; 换行）', 'hero.builderNote', c.hero.builderNote, { rows: 3, code: true });
+  c.hero.facts.forEach((f, i) => {
+    h += `<div class="row">` + field(`数据 ${i + 1} · 数字`, `hero.facts.${i}.num`, f.num) + field(`数据 ${i + 1} · 文字`, `hero.facts.${i}.label`, f.label) + `</div>`;
+  });
+  h += field('右下小标', 'hero.taglineKicker', c.hero.taglineKicker);
+  h += field('右下大字（支持 &lt;br&gt;）', 'hero.taglineBig', c.hero.taglineBig, { rows: 2, code: true });
+  h += field('底部按钮文字', 'hero.hint', c.hero.hint);
+  h += `</div></details>`;
+
+  h += `<details><summary>第二屏（Odyssey / 履历）</summary><div class="body">`;
+  h += field('小标', 'odyssey.kicker', c.odyssey.kicker);
+  h += field('标题', 'odyssey.title', c.odyssey.title);
+  h += field('时间范围行', 'odyssey.since', c.odyssey.since);
+  c.odyssey.timeline.forEach((t, i) => {
+    h += field(`时间线 ${i + 1} · 年份`, `odyssey.timeline.${i}.year`, t.year);
+    h += field(`时间线 ${i + 1} · 说明（支持 &lt;br&gt;）`, `odyssey.timeline.${i}.label`, t.label, { rows: 2, code: true });
+  });
+  h += field('一句话（中文）', 'odyssey.lineZh', c.odyssey.lineZh);
+  h += field('一句话（英文小字）', 'odyssey.lineEn', c.odyssey.lineEn);
+  h += field('「关于这个网页」小标', 'odyssey.aboutHead', c.odyssey.aboutHead);
+  c.odyssey.about.forEach((a, i) => h += field(`关于段落 ${i + 1}`, `odyssey.about.${i}`, a, { rows: 3 }));
+  h += field('底部按钮文字', 'odyssey.hint', c.odyssey.hint);
+  h += `</div></details>`;
+
+  h += `<details><summary>项目管理（第三屏「项目」面板）</summary><div class="body">`;
+  h += `<div class="hint">在这里添加 / 删除 / 排序项目。截图先把图片文件放进仓库 assets/portfolio/ 目录，再在下面填路径。</div>`;
+  h += `<div id="proj-list">${renderProjects()}</div>`;
+  h += `<button type="button" class="primary" id="btn-addproj">＋ 添加项目</button>`;
+  h += `</div></details>`;
+
+  h += `<details><summary>月亮手册（页标题 / 提示）</summary><div class="body">`;
+  h += field('页面顶部标题', 'solar.pageTitle', c.solar.pageTitle);
+  h += field('点大月亮提示行', 'solar.openHint', c.solar.openHint);
+  h += `</div></details>`;
+
+  const names = ['① 着陆 NEW MOON', '② 关于我', '③ 项目', '④ 技能', '⑤ 运营', '⑥ 游戏理解', '⑦ 经历', '⑧ 联系'];
+  c.phases.forEach((p, i) => {
+    const skipBody = i === 2; // 项目面板由「项目管理」构建
+    h += `<details><summary>月相 ${names[i] || i} · ${esc(p.title)}</summary><div class="body">`;
+    h += field('相位代号', `phases.${i}.code`, p.code);
+    h += `<div class="row">` + field('中文名', `phases.${i}.name`, p.name) + field('英文名', `phases.${i}.en`, p.en) + `</div>`;
+    h += field('面板大标题', `phases.${i}.title`, p.title);
+    h += field('一句介绍（月亮下方 / 面板首行）', `phases.${i}.line`, p.line);
+    h += field('点大月亮跳转页（留空 = 不跳转）', `phases.${i}.page`, p.page);
+    if (skipBody) {
+      h += `<div class="hint">「项目」面板的内容在上方「项目管理」分区编辑。</div>`;
+    } else {
+      h += field('面板正文（HTML，谨慎修改）', `phases.${i}.bodyHtml`, p.bodyHtml, { rows: 10, code: true, hint: '保持 &lt;li&gt;&lt;strong&gt;&lt;span&gt; 等结构与 class 不变，只改文字最安全' });
+    }
+    h += `</div></details>`;
+  });
+
+  h += `<details><summary>联系（最后一屏）</summary><div class="body">`;
+  h += field('小标', 'contact.kicker', c.contact.kicker);
+  h += field('大标题（支持 &lt;br&gt;）', 'contact.title', c.contact.title, { rows: 2, code: true });
+  c.contact.chips.forEach((ch, i) => {
+    h += `<div class="row">` + field(`胶囊 ${i + 1} · 文字`, `contact.chips.${i}.text`, ch.text) + field(`胶囊 ${i + 1} · 链接`, `contact.chips.${i}.href`, ch.href) + `</div>`;
+  });
+  h += field('版权行（含 &lt;span data-year&gt; 年份占位）', 'contact.copyright', c.contact.copyright, { rows: 2, code: true });
+  h += `</div></details>`;
+
+  APP.innerHTML = h;
+  bindProjButtons();
+}
+
+/* ---------------- 项目增删排序 ---------------- */
+function collectProjectsFromDom() {
+  const list = [];
+  document.querySelectorAll('#proj-list .proj').forEach((box) => {
+    const g = (k) => { const el = box.querySelector(`[data-k="${k}"]`); return el ? el.value : ''; };
+    list.push({
+      name: g('name'), tag: g('tag'), href: g('href'),
+      images: g('images').split('\n').map(s => s.trim()).filter(Boolean),
+      bullets: g('bullets').split('\n').map(s => s.trim()).filter(Boolean),
+      links: g('links').split('\n').map(s => s.trim()).filter(Boolean).map(line => {
+        const idx = line.indexOf('|');
+        return idx < 0 ? { text: line, href: '' } : { text: line.slice(0, idx).trim(), href: line.slice(idx + 1).trim() };
+      })
+    });
+  });
+  return list;
+}
+function syncProjectsToContent() { content.projects = collectProjectsFromDom(); }
+function bindProjButtons() {
+  APP.addEventListener('click', (e) => {
+    const b = e.target.closest('button[data-act], #btn-addproj');
+    if (!b) return;
+    syncProjectsToContent();
+    if (b.id === 'btn-addproj') {
+      content.projects.push({ name: '新项目', tag: '', href: '', images: [], bullets: [], links: [] });
+    } else {
+      const i = +b.dataset.i;
+      if (b.dataset.act === 'del') content.projects.splice(i, 1);
+      if (b.dataset.act === 'up' && i > 0) { const t = content.projects[i - 1]; content.projects[i - 1] = content.projects[i]; content.projects[i] = t; }
+      if (b.dataset.act === 'down' && i < content.projects.length - 1) { const t = content.projects[i + 1]; content.projects[i + 1] = content.projects[i]; content.projects[i] = t; }
+    }
+    const box = document.getElementById('proj-list');
+    box.innerHTML = renderProjects();
+  });
+}
+
+/* ---------------- 保存 ---------------- */
+async function saveLocal(push) {
+  const r = await fetch('/api/content' + (push ? '?push=1' : ''), {
+    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(content, null, 2)
+  });
+  return r.json();
+}
+
+async function doSave(push) {
+  syncProjectsToContent();
+  const text = JSON.stringify(content, null, 2) + '\n';
+  const btns = [document.getElementById('btn-save'), document.getElementById('btn-push')];
+  btns.forEach(b => b.disabled = true);
+  try {
+    if (MODE === 'local') {
+      const res = await saveLocal(push);
+      if (res.ok) show(res.message + (res.detail ? '\n' + res.detail : ''), true);
+      else show('出错了：' + (res.error || ''), false);
+    } else {
+      if (push) {
+        await cloudSave(text);
+        show('已提交到 GitHub！网站约 1 分钟后自动更新（Pages 构建）。', true);
+      } else {
+        show('在线模式下没有「仅保存」：内容保存在你浏览器里，点「保存并推送上线」才会写入仓库。', true);
+      }
+    }
+  } catch (e) {
+    show('出错了：' + String(e.message || e), false);
+  } finally {
+    btns.forEach(b => b.disabled = false);
+  }
+}
+
+/* ---------------- 模式初始化 ---------------- */
+function renderSetup(reason) {
+  const c = cfg();
+  APP.innerHTML = `
+  <div class="setup">
+    <h2>在线后台 · 首次配置</h2>
+    <p class="hint">${reason || ''}</p>
+    <label>GitHub 用户名 / 仓库名（自动识别，可改）</label>
+    <div class="row">
+      <input type="text" id="cfg-owner" value="${esc(c.owner || '')}" class="code">
+      <input type="text" id="cfg-repo" value="${esc(c.repo || '')}" class="code">
+    </div>
+    <label>分支</label>
+    <input type="text" id="cfg-branch" value="${esc(c.branch || 'main')}" class="code">
+    <label>OAuth App Client ID（推荐，用于 GitHub 一键授权）</label>
+    <input type="text" id="cfg-clientid" value="${esc(c.clientId || '')}" class="code" placeholder="github.com/settings/developers 里创建后复制">
+    <button type="button" class="primary" id="btn-oauth" style="margin-top:12px">用 GitHub 授权并开始编辑</button>
+    <p class="hint" style="margin-top:10px">还没有 OAuth App？花 2 分钟创建：<br>
+      1. 打开 github.com/settings/developers → 「New OAuth App」<br>
+      2. Application name 随意；Homepage 填 ${esc(location.origin + location.pathname)}<br>
+      3. <b>Authorization callback URL 必须填：</b>${esc(location.origin + location.pathname)}<br>
+      4. 创建后复制 Client ID 粘贴到上面，点授权按钮。</p>
+    <p class="hint">—— 或者 ——</p>
+    <label>个人访问令牌（PAT，快速方式；需 repo 权限，保存在本机浏览器）</label>
+    <input type="text" id="cfg-pat" class="code" placeholder="ghp_ 或 github_pat_ 开头">
+    <button type="button" id="btn-pat" style="margin-top:10px">用 PAT 登录</button>
+  </div>`;
+
+  document.getElementById('btn-oauth').addEventListener('click', () => {
+    saveCfg({ ...cfg(), owner: val('cfg-owner'), repo: val('cfg-repo'), branch: val('cfg-branch'), clientId: val('cfg-clientid') });
+    startOAuth();
+  });
+  document.getElementById('btn-pat').addEventListener('click', async () => {
+    const tok = val('cfg-pat').trim();
+    if (!tok) return show('请先粘贴 PAT', false);
+    saveCfg({ ...cfg(), owner: val('cfg-owner'), repo: val('cfg-repo'), branch: val('cfg-branch') });
+    sessionStorage.setItem(SS_TOK, tok);
+    await boot();
+  });
+}
+const val = (id) => document.getElementById(id).value.trim();
+
+async function boot() {
+  BADGE.textContent = MODE === 'local' ? '本地模式' : '在线模式 · GitHub';
+  if (MODE === 'local') {
+    const r = await fetch('/api/content');
+    content = await r.json();
+    render(content);
+    return;
+  }
+  const c = cfg();
+  const hadCode = await finishOAuth();
+  const tok = sessionStorage.getItem(SS_TOK);
+  if (!tok) {
+    BADGE.textContent = '在线模式 · 未登录';
+    BADGE.className = 'badge err';
+    AUTH_AREA.innerHTML = c.clientId ? `<button type="button" id="btn-reauth">GitHub 授权</button>` : '';
+    const re = document.getElementById('btn-reauth');
+    if (re) re.addEventListener('click', startOAuth);
+    renderSetup(tok ? '上次登录已失效，请重新登录。' : '');
+    return;
+  }
+  BADGE.textContent = '在线模式 · ' + c.owner + '/' + c.repo;
+  AUTH_AREA.innerHTML = `<button type="button" id="btn-logout" class="small">退出登录</button>`;
+  document.getElementById('btn-logout').addEventListener('click', logoutCloud);
+  const res = await cloudLoad();
+  if (res.needAuth) {
+    sessionStorage.removeItem(SS_TOK);
+    BADGE.textContent = '在线模式 · 登录失效';
+    BADGE.className = 'badge err';
+    renderSetup(res.bad ? '令牌无效或权限不足（PAT 需要 repo 权限），请重新登录。' : '');
+    return;
+  }
+  content = JSON.parse(res.text);
+  render(content);
+}
+
+document.getElementById('btn-save').addEventListener('click', () => doSave(false));
+document.getElementById('btn-push').addEventListener('click', () => doSave(true));
+document.getElementById('btn-reload').addEventListener('click', boot);
+boot();
+</script>
+</body>
+</html>

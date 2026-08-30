@@ -94,7 +94,7 @@
       "title": "做过的项目",
       "line": "六个项目，点开就能看：女巫、暮鸦、雾港、塔防、HotPick、余烬。",
       "page": "projects.html",
-      "bodyHtml": "<ul class=\"pb-list\"><li class=\"pb-rich\"><a class=\"pb-card-open\" href=\"project-witch.html\" aria-label=\"放开那个女巫：灰堡黎明\"></a><strong>放开那个女巫：灰堡黎明</strong><span class=\"pb-rich-tag\">Godot 4 · 卡牌回合 RPG</span><span class=\"pb-shot-row\"><img class=\"pb-shot\" src=\"assets/portfolio/witch-city.png\" alt=\"放开那个女巫：灰堡黎明\"><img class=\"pb-shot\" src=\"assets/portfolio/witch-battle.png\" alt=\"放开那个女巫：灰堡黎明\"></span><ul class=\"pb-bullets\"><li>3 AP 速度行动战斗：移动/攻击/技能共享行动点</li><li>角色收集与养成，28 节点关卡</li><li>移动端布局与真机验证</li></ul><span class=\"pb-links\"><a href=\"assets/docs/release-the-witch-prd.pdf\" target=\"_blank\" rel=\"noopener\">PRD</a><a href=\"release-the-witch-game.html\" target=\"_self\" rel=\"noopener\">试玩 →</a></span></li><li class=\"pb-rich\"><a class=\"pb-card-open\" href=\"project-raven.html\" aria-label=\"暮鸦之墓\"></a><strong>暮鸦之墓</strong><span class=\"pb-rich-tag\">Godot 4.3 · 开放世界 ARPG</span><span class=\"pb-shot-row\"><img class=\"pb-shot\" src=\"assets/portfolio/mournraven-world.png\" alt=\"暮鸦之墓\"><img class=\"pb-shot\" src=\"assets/portfolio/mournraven-dungeon.png\" alt=\"暮鸦之墓\"></span><ul class=\"pb-bullets\"><li>主城 / 野外 / 副本三类区域</li><li>战斗、AI 与装备成长闭环</li><li>12 类 JSON 配置表，数值可热更</li></ul><span class=\"pb-links\"><a href=\"assets/docs/mournraven-gdd.pdf\" target=\"_blank\" rel=\"noopener\">GDD</a></span></li><li class=\"pb-rich\"><a class=\"pb-card-open\" href=\"project-fog.html\" aria-label=\"雾港疑云\"></a><strong>雾港疑云</strong><span class=\"pb-rich-tag\">Web + Unity · 悬疑叙事</span><span class=\"pb-shot-row\"><img class=\"pb-shot\" src=\"assets/portfolio/fog-harbor-top.png\" alt=\"雾港疑云\"><img class=\"pb-shot\" src=\"assets/portfolio/fog-harbor-gameplay.png\" alt=\"雾港疑云\"></span><ul class=\"pb-bullets\"><li>真相度与信任双变量决策</li><li>信件收集与线索网</li><li>三幕四结局分支</li></ul></li><li class=\"pb-rich\"><a class=\"pb-card-open\" href=\"project-sango.html\" aria-label=\"三国文字合成塔防\"></a><strong>三国文字合成塔防</strong><span class=\"pb-rich-tag\">React + TS · 策略塔防</span><span class=\"pb-shot-row\"><img class=\"pb-shot\" src=\"assets/portfolio/sango.jpg\" alt=\"三国文字合成塔防\"><img class=\"pb-shot\" src=\"assets/portfolio/sango-gameplay.png\" alt=\"三国文字合成塔防\"></span><ul class=\"pb-bullets\"><li>8 条合成线</li><li>双经济（金币/粮草）</li><li>20 波战役节奏</li></ul></li><li class=\"pb-rich\"><a class=\"pb-card-open\" href=\"project-hotpick.html\" aria-label=\"HotPick Studio\"></a><strong>HotPick Studio</strong><span class=\"pb-rich-tag\">React · Electron · AI 产品</span><span class=\"pb-shot-row\"><img class=\"pb-shot\" src=\"assets/portfolio/hotpick.jpg\" alt=\"HotPick Studio\"><img class=\"pb-shot\" src=\"assets/portfolio/hotpick-flow.png\" alt=\"HotPick Studio\"></span><ul class=\"pb-bullets\"><li>五阶段工作台：选题→评分→转化→生产→复盘</li><li>热点数据接入与信号打分</li><li>PRD 25 条编号需求</li></ul><span class=\"pb-links\"><a href=\"assets/docs/hotpick-studio-prd.pdf\" target=\"_blank\" rel=\"noopener\">PRD</a></span></li><li class=\"pb-rich\"><a class=\"pb-card-open\" href=\"project-emberfall.html\" aria-label=\"余烬之城 Emberfall\"></a><strong>余烬之城 Emberfall</strong><span class=\"pb-rich-tag\">Godot 4.7 · 生存城建 SLG</span><span class=\"pb-shot-row\"><img class=\"pb-shot\" src=\"assets/portfolio/emberfall-city.png\" alt=\"余烬之城 Emberfall\"><img class=\"pb-shot\" src=\"assets/portfolio/emberfall-map.png\" alt=\"余烬之城 Emberfall\"></span><ul class=\"pb-bullets\"><li>熔炉供暖驱动生存压力</li><li>资源调度与暴风雪事件</li><li>可玩切片：完整闭环</li></ul><span class=\"pb-links\"><a href=\"emberfall-game.html\" target=\"_self\" rel=\"noopener\">试玩 →</a></span></li></ul>"
+      "bodyHtml": ""
     },
     {
       "code": "PHASE 3 · WAXING GIBBOUS",
@@ -160,5 +160,121 @@
       }
     ],
     "copyright": "© <span data-year>2026</span> 陈黄勇 · CHY.GALAXY —— 以像素为骨，以作品为星"
-  }
+  },
+  "projects": [
+    {
+      "name": "放开那个女巫：灰堡黎明",
+      "tag": "Godot 4 · 卡牌回合 RPG",
+      "href": "project-witch.html",
+      "images": [
+        "assets/portfolio/witch-city.png",
+        "assets/portfolio/witch-battle.png"
+      ],
+      "bullets": [
+        "3 AP 速度行动战斗：移动/攻击/技能共享行动点",
+        "角色收集与养成，28 节点关卡",
+        "移动端布局与真机验证"
+      ],
+      "links": [
+        {
+          "text": "PRD",
+          "href": "assets/docs/release-the-witch-prd.pdf"
+        },
+        {
+          "text": "试玩 →",
+          "href": "release-the-witch-game.html"
+        }
+      ]
+    },
+    {
+      "name": "暮鸦之墓",
+      "tag": "Godot 4.3 · 开放世界 ARPG",
+      "href": "project-raven.html",
+      "images": [
+        "assets/portfolio/mournraven-world.png",
+        "assets/portfolio/mournraven-dungeon.png"
+      ],
+      "bullets": [
+        "主城 / 野外 / 副本三类区域",
+        "战斗、AI 与装备成长闭环",
+        "12 类 JSON 配置表，数值可热更"
+      ],
+      "links": [
+        {
+          "text": "GDD",
+          "href": "assets/docs/mournraven-gdd.pdf"
+        }
+      ]
+    },
+    {
+      "name": "雾港疑云",
+      "tag": "Web + Unity · 悬疑叙事",
+      "href": "project-fog.html",
+      "images": [
+        "assets/portfolio/fog-harbor-top.png",
+        "assets/portfolio/fog-harbor-gameplay.png"
+      ],
+      "bullets": [
+        "真相度与信任双变量决策",
+        "信件收集与线索网",
+        "三幕四结局分支"
+      ],
+      "links": []
+    },
+    {
+      "name": "三国文字合成塔防",
+      "tag": "React + TS · 策略塔防",
+      "href": "project-sango.html",
+      "images": [
+        "assets/portfolio/sango.jpg",
+        "assets/portfolio/sango-gameplay.png"
+      ],
+      "bullets": [
+        "8 条合成线",
+        "双经济（金币/粮草）",
+        "20 波战役节奏"
+      ],
+      "links": []
+    },
+    {
+      "name": "HotPick Studio",
+      "tag": "React · Electron · AI 产品",
+      "href": "project-hotpick.html",
+      "images": [
+        "assets/portfolio/hotpick.jpg",
+        "assets/portfolio/hotpick-flow.png"
+      ],
+      "bullets": [
+        "五阶段工作台：选题→评分→转化→生产→复盘",
+        "热点数据接入与信号打分",
+        "PRD 25 条编号需求"
+      ],
+      "links": [
+        {
+          "text": "PRD",
+          "href": "assets/docs/hotpick-studio-prd.pdf"
+        }
+      ]
+    },
+    {
+      "name": "余烬之城 Emberfall",
+      "tag": "Godot 4.7 · 生存城建 SLG",
+      "href": "project-emberfall.html",
+      "images": [
+        "assets/portfolio/emberfall-city.png",
+        "assets/portfolio/emberfall-map.png"
+      ],
+      "bullets": [
+        "熔炉供暖驱动生存压力",
+        "资源调度与暴风雪事件",
+        "可玩切片：完整闭环"
+      ],
+      "links": [
+        {
+          "text": "试玩 →",
+          "href": "emberfall-game.html"
+        }
+      ]
+    }
+  ]
 }
