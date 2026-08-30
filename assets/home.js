@@ -940,7 +940,12 @@
       if (ae.closest && ae.closest('.moon-panel')) return true;
       return !!ae.closest && !!ae.closest('a, button, input, textarea, select, [tabindex]');
     }
+    // 密码门打开时：不切场景、不拦截输入
+    function gateOpen() {
+      return document.body.classList.contains('admin-gate-open');
+    }
     function onWheel(e) {
+      if (gateOpen()) return;
       if (inScrollable(e.target)) return;   // 面板内容随滚轮原生滚动
       e.preventDefault();
       wheelAccum += e.deltaY;
@@ -954,10 +959,14 @@
     }
 
     function onKey(e) {
+      if (gateOpen()) return;
       var k = e.key;
+      var ae = document.activeElement;
+      var inField = ae && (ae.tagName === 'INPUT' || ae.tagName === 'TEXTAREA');
+      if (inField) return;                  // 输入框内打字：方向键/空格全部保留
       if (k === ' ' || k === 'Enter') {
         if (typingTarget()) return;         // 按钮/链接/面板内：保留原生行为
-      } else if (inScrollable(document.activeElement)) {
+      } else if (inScrollable(ae)) {
         return;                             // 面板获得焦点：方向键/翻页交给原生滚动
       }
       if (k === 'ArrowDown' || k === 'PageDown' || k === ' ') { e.preventDefault(); go(1); }
@@ -1693,5 +1702,53 @@
     .then(function (r) { return r.ok ? r.json() : null; })
     .then(function (c) { if (c) applyContent(c); })
     .catch(function () { /* 无 content.json 时使用内置文案 */ });
+
+
+  /* ==================== ADMIN GATE —— 联系页「编辑」入口（密码门） ==================== */
+  (function () {
+    var entry = document.querySelector('.admin-entry');
+    var gate = document.getElementById('admin-gate');
+    if (!entry || !gate) return;
+    var input = gate.querySelector('.admin-gate-input');
+    var errEl = gate.querySelector('.admin-gate-err');
+    var PASS = '1q2w3e4r5t';
+
+    function openGate() {
+      gate.classList.add('is-open');
+      gate.setAttribute('aria-hidden', 'false');
+      document.body.classList.add('admin-gate-open');
+      setTimeout(function () { input.focus(); }, 60);
+    }
+    function closeGate() {
+      gate.classList.remove('is-open');
+      gate.setAttribute('aria-hidden', 'true');
+      document.body.classList.remove('admin-gate-open');
+      input.value = '';
+      if (errEl) errEl.textContent = '';
+    }
+    function submit() {
+      if (input.value === PASS) {
+        var adminUrl = (location.hostname === 'localhost' || location.hostname === '127.0.0.1')
+          ? 'http://localhost:8642/'
+          : './admin.html';
+        location.href = adminUrl;
+        return;
+      }
+      if (errEl) errEl.textContent = '密码不对，再试试';
+      input.value = '';
+      input.focus();
+    }
+
+    entry.addEventListener('click', openGate);
+    gate.addEventListener('click', function (e) { if (e.target === gate) closeGate(); });
+    var okBtn = gate.querySelector('[data-gate-ok]');
+    var cancelBtn = gate.querySelector('[data-gate-cancel]');
+    if (okBtn) okBtn.addEventListener('click', submit);
+    if (cancelBtn) cancelBtn.addEventListener('click', closeGate);
+    input.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') submit();
+      else if (e.key === 'Escape') closeGate();
+    });
+  })();
 
 })();
