@@ -1,0 +1,164 @@
+{
+  "header": {
+    "brand": "CHY.GALAXY · 主页",
+    "nav": [
+      "项目终端",
+      "关于我",
+      "运营",
+      "月亮手册"
+    ]
+  },
+  "hero": {
+    "kicker": "CHY.GALAXY",
+    "titleBefore": "以作品为星，",
+    "titleHighlight": "把光带回来",
+    "role": "陈黄勇 · 产品经理 / 运营策划 / 编导",
+    "builderKicker": "Game builder",
+    "builderNote": "策划、数值、运营、代码我都能上手。<br>做过的项目不一定大，但每一个都能跑。",
+    "facts": [
+      {
+        "num": "06",
+        "label": "项目"
+      },
+      {
+        "num": "05",
+        "label": "Demo"
+      },
+      {
+        "num": "30%",
+        "label": "热搜"
+      }
+    ],
+    "taglineKicker": "Playable portfolio",
+    "taglineBig": "Build your own<br>galaxy.",
+    "hint": "滑动开启探索"
+  },
+  "odyssey": {
+    "kicker": "THE CHY ODYSSEY",
+    "title": "Odyssey",
+    "since": "2022 — 2026 · 持续中",
+    "timeline": [
+      {
+        "year": "2022",
+        "label": "入学<br>网络与新媒体"
+      },
+      {
+        "year": "2023",
+        "label": "闻泰科技<br>产品运营实习"
+      },
+      {
+        "year": "2026",
+        "label": "新蛋<br>产品经理实习"
+      },
+      {
+        "year": "2026-",
+        "label": "西安纬度<br>编导 × 游戏策划"
+      }
+    ],
+    "lineZh": "也许有一天，你玩到的游戏是我做的。",
+    "lineEn": "The beginning of playable.",
+    "aboutHead": "关于这个网页",
+    "about": [
+      "这是我的简历，也是作品集。整站做成「月亮手册」：八个月相对应八段内容，没有第二层页面；只有第二屏会跟着你的鼠标亮起色彩，其他屏保持黑白像素。",
+      "纯 HTML / CSS / JS + Canvas / WebGL2 绘制，动画为 GSAP 与自研时钟，GitHub Pages 部署。"
+    ],
+    "hint": "继续了解"
+  },
+  "solar": {
+    "pageTitle": "〈 月球手册 · 月亮相位 〉",
+    "openHint": "↘ 点大月亮，打开该类目的完整页"
+  },
+  "phases": [
+    {
+      "code": "PHASE 0 · NEW MOON",
+      "name": "着陆",
+      "en": "NEW MOON",
+      "title": "月球手册",
+      "line": "点下面的小月亮切换内容。八个阶段，八段东西，全在这一个页面里。",
+      "page": "",
+      "bodyHtml": "<ul class=\"pb-list\"><li><strong>06</strong><span>个项目档案，截图和要点都在下面</span></li><li><strong>05</strong><span>个可运行 Demo，点了就能玩</span></li><li><strong>30%</strong><span>内容上过热搜，单条最高 300 万播放</span></li><li><strong>08</strong><span>个月相 = 8 段内容，没有第二层页面</span></li></ul>"
+    },
+    {
+      "code": "PHASE 1 · WAXING CRESCENT",
+      "name": "关于我",
+      "en": "WAXING CRESCENT",
+      "title": "关于我",
+      "line": "我叫陈黄勇。学网络与新媒体，做产品和编导。",
+      "page": "about.html",
+      "bodyHtml": "<div class=\"pb-profile\"><img class=\"pb-photo img-color\" src=\"assets/portfolio/profile.png\" alt=\"陈黄勇\"><div class=\"pb-profile-text\"><p>2022 年入学，2026 年毕业。编导、运营、产品都做过，现在做产品和编导。</p><p class=\"pb-profile-note\">简历在这里，完整介绍在下面。</p></div></div><ul class=\"pb-list\"><li class=\"pb-card\"><img class=\"pb-thumb\" src=\"assets/portfolio/content-workflow.png\" alt=\"内容工作流\"><div class=\"pb-card-body\"><strong>内容编导</strong><span>AI 类目编导：三条内容赛道，选题、脚本、分镜、排期、复盘一条线。影视编导出身，内容三成进过 B 站热搜。</span></div></li></ul><div class=\"pb-actions\"><a href=\"assets/陈黄勇_产品经理_系统策划_编导_简历.pdf\" download>下载简历 PDF</a><a class=\"pb-ghost\" href=\"mailto:2126431683@qq.com\">邮件</a><a class=\"pb-ghost\" href=\"tel:19279459077\">电话</a></div>"
+    },
+    {
+      "code": "PHASE 2 · FIRST QUARTER",
+      "name": "项目",
+      "en": "FIRST QUARTER",
+      "title": "做过的项目",
+      "line": "六个项目，点开就能看：女巫、暮鸦、雾港、塔防、HotPick、余烬。",
+      "page": "projects.html",
+      "bodyHtml": "<ul class=\"pb-list\"><li class=\"pb-rich\"><a class=\"pb-card-open\" href=\"project-witch.html\" aria-label=\"放开那个女巫：灰堡黎明\"></a><strong>放开那个女巫：灰堡黎明</strong><span class=\"pb-rich-tag\">Godot 4 · 卡牌回合 RPG</span><span class=\"pb-shot-row\"><img class=\"pb-shot\" src=\"assets/portfolio/witch-city.png\" alt=\"放开那个女巫：灰堡黎明\"><img class=\"pb-shot\" src=\"assets/portfolio/witch-battle.png\" alt=\"放开那个女巫：灰堡黎明\"></span><ul class=\"pb-bullets\"><li>3 AP 速度行动战斗：移动/攻击/技能共享行动点</li><li>角色收集与养成，28 节点关卡</li><li>移动端布局与真机验证</li></ul><span class=\"pb-links\"><a href=\"assets/docs/release-the-witch-prd.pdf\" target=\"_blank\" rel=\"noopener\">PRD</a><a href=\"release-the-witch-game.html\" target=\"_self\" rel=\"noopener\">试玩 →</a></span></li><li class=\"pb-rich\"><a class=\"pb-card-open\" href=\"project-raven.html\" aria-label=\"暮鸦之墓\"></a><strong>暮鸦之墓</strong><span class=\"pb-rich-tag\">Godot 4.3 · 开放世界 ARPG</span><span class=\"pb-shot-row\"><img class=\"pb-shot\" src=\"assets/portfolio/mournraven-world.png\" alt=\"暮鸦之墓\"><img class=\"pb-shot\" src=\"assets/portfolio/mournraven-dungeon.png\" alt=\"暮鸦之墓\"></span><ul class=\"pb-bullets\"><li>主城 / 野外 / 副本三类区域</li><li>战斗、AI 与装备成长闭环</li><li>12 类 JSON 配置表，数值可热更</li></ul><span class=\"pb-links\"><a href=\"assets/docs/mournraven-gdd.pdf\" target=\"_blank\" rel=\"noopener\">GDD</a></span></li><li class=\"pb-rich\"><a class=\"pb-card-open\" href=\"project-fog.html\" aria-label=\"雾港疑云\"></a><strong>雾港疑云</strong><span class=\"pb-rich-tag\">Web + Unity · 悬疑叙事</span><span class=\"pb-shot-row\"><img class=\"pb-shot\" src=\"assets/portfolio/fog-harbor-top.png\" alt=\"雾港疑云\"><img class=\"pb-shot\" src=\"assets/portfolio/fog-harbor-gameplay.png\" alt=\"雾港疑云\"></span><ul class=\"pb-bullets\"><li>真相度与信任双变量决策</li><li>信件收集与线索网</li><li>三幕四结局分支</li></ul></li><li class=\"pb-rich\"><a class=\"pb-card-open\" href=\"project-sango.html\" aria-label=\"三国文字合成塔防\"></a><strong>三国文字合成塔防</strong><span class=\"pb-rich-tag\">React + TS · 策略塔防</span><span class=\"pb-shot-row\"><img class=\"pb-shot\" src=\"assets/portfolio/sango.jpg\" alt=\"三国文字合成塔防\"><img class=\"pb-shot\" src=\"assets/portfolio/sango-gameplay.png\" alt=\"三国文字合成塔防\"></span><ul class=\"pb-bullets\"><li>8 条合成线</li><li>双经济（金币/粮草）</li><li>20 波战役节奏</li></ul></li><li class=\"pb-rich\"><a class=\"pb-card-open\" href=\"project-hotpick.html\" aria-label=\"HotPick Studio\"></a><strong>HotPick Studio</strong><span class=\"pb-rich-tag\">React · Electron · AI 产品</span><span class=\"pb-shot-row\"><img class=\"pb-shot\" src=\"assets/portfolio/hotpick.jpg\" alt=\"HotPick Studio\"><img class=\"pb-shot\" src=\"assets/portfolio/hotpick-flow.png\" alt=\"HotPick Studio\"></span><ul class=\"pb-bullets\"><li>五阶段工作台：选题→评分→转化→生产→复盘</li><li>热点数据接入与信号打分</li><li>PRD 25 条编号需求</li></ul><span class=\"pb-links\"><a href=\"assets/docs/hotpick-studio-prd.pdf\" target=\"_blank\" rel=\"noopener\">PRD</a></span></li><li class=\"pb-rich\"><a class=\"pb-card-open\" href=\"project-emberfall.html\" aria-label=\"余烬之城 Emberfall\"></a><strong>余烬之城 Emberfall</strong><span class=\"pb-rich-tag\">Godot 4.7 · 生存城建 SLG</span><span class=\"pb-shot-row\"><img class=\"pb-shot\" src=\"assets/portfolio/emberfall-city.png\" alt=\"余烬之城 Emberfall\"><img class=\"pb-shot\" src=\"assets/portfolio/emberfall-map.png\" alt=\"余烬之城 Emberfall\"></span><ul class=\"pb-bullets\"><li>熔炉供暖驱动生存压力</li><li>资源调度与暴风雪事件</li><li>可玩切片：完整闭环</li></ul><span class=\"pb-links\"><a href=\"emberfall-game.html\" target=\"_self\" rel=\"noopener\">试玩 →</a></span></li></ul>"
+    },
+    {
+      "code": "PHASE 3 · WAXING GIBBOUS",
+      "name": "技能",
+      "en": "WAXING GIBBOUS",
+      "title": "我会什么",
+      "line": "会写需求文档，会做系统，会写脚本，也会剪片子。",
+      "page": "about.html",
+      "bodyHtml": "<ul class=\"pb-list\"><li><strong>产品判断</strong><span>用户分层与竞品、MVP 范围与优先级、数据指标与埋点。</span></li><li><strong>系统策划</strong><span>战斗与数值、养成与关卡循环、经济与产出消耗。</span></li><li><strong>技术落地</strong><span>Godot / Unity / React、JSON 配置与存档、移动端验证。</span></li><li><strong>内容编导</strong><span>选题、脚本、分镜、排期、复盘。</span></li></ul><p class=\"moon-mini-head\">干活顺序</p><ul class=\"pb-list pb-steps\"><li><strong>01 定位与范围</strong><span>明确用户、乐趣、约束，先守住 MVP。</span></li><li><strong>02 系统与数值</strong><span>拆状态、输入输出与依赖，定成长基线。</span></li><li><strong>03 文档与配置</strong><span>PRD/GDD、流程、容错、配表，能直接执行。</span></li><li><strong>04 验证与迭代</strong><span>引擎里跑完整链路，P0/P1/P2 给验收线。</span></li></ul>"
+    },
+    {
+      "code": "PHASE 4 · FULL MOON",
+      "name": "运营",
+      "en": "FULL MOON",
+      "title": "运营那些事",
+      "line": "做过内容运营：三条 AI 赛道，30% 上过热搜。",
+      "page": "operations.html",
+      "bodyHtml": "<div class=\"pb-stats\"><div><strong>30%</strong><span>热搜命中率</span></div><div><strong>#02</strong><span>最高热搜榜</span></div><div><strong>300万</strong><span>单条最高播放</span></div></div><ul class=\"pb-list\"><li><strong>三条内容赛道</strong><span>AI 科普 · 工具实操 · AIGC 创作，栏目、脚本、分镜、排期一条线。</span></li><li><strong>HotPick Studio</strong><span>把选题、评分、转化、生产、复盘的重复判断做成五阶段工作台。</span><span class=\"pb-links\"><a href=\"assets/docs/hotpick-studio-prd.pdf\" target=\"_blank\" rel=\"noopener\">PRD</a></span></li></ul>"
+    },
+    {
+      "code": "PHASE 5 · WANING GIBBOUS",
+      "name": "游戏理解",
+      "en": "WANING GIBBOUS",
+      "title": "我怎么看游戏",
+      "line": "玩游戏比较多，拆过七个类型，每类都写了看法。",
+      "page": "game-analysis.html",
+      "bodyHtml": "<ul class=\"pb-list\"><li class=\"pb-rich\"><img class=\"pb-shot\" src=\"assets/games/sekiro.jpg\" alt=\"\"><strong>动作</strong><span>《只狼》《黑神话：悟空》—— 精确输入与节奏化的攻防交换。</span></li><li class=\"pb-rich\"><img class=\"pb-shot\" src=\"assets/games/elden-ring.jpg\" alt=\"\"><strong>开放世界</strong><span>《艾尔登法环》《巫师 3》—— 目的由玩家自己长出来的探索结构。</span></li><li class=\"pb-rich\"><img class=\"pb-shot\" src=\"assets/games/forza-horizon.jpg\" alt=\"\"><strong>竞速</strong><span>《极限竞速：地平线》—— 手感与自由探索边界的平衡。</span></li><li class=\"pb-rich\"><img class=\"pb-shot\" src=\"assets/portfolio/fog-harbor-top.png\" alt=\"\"><strong>叙事</strong><span>《雾港疑云》同源方法 —— 双变量驱动的分支叙事。</span></li><li class=\"pb-rich\"><img class=\"pb-shot\" src=\"assets/games/plants-vs-zombies.jpg\" alt=\"\"><strong>休闲</strong><span>《植物大战僵尸》—— 单关卡的资源节奏与决策压力。</span></li><li class=\"pb-rich\"><img class=\"pb-shot\" src=\"assets/games/horizon-zero-dawn.jpg\" alt=\"\"><strong>FPS</strong><span>《地平线：零之曙光》—— 武器学习曲线与公平性。</span></li><li class=\"pb-rich\"><img class=\"pb-shot\" src=\"assets/games/whiteout-survival.jpg\" alt=\"\"><strong>策略 / SLG</strong><span>《三国塔防》《白色荒野》—— 循环与压力的设计取舍。</span></li></ul>"
+    },
+    {
+      "code": "PHASE 6 · LAST QUARTER",
+      "name": "经历",
+      "en": "LAST QUARTER",
+      "title": "走到今天",
+      "line": "2022 年进大学，2026 年毕业。读的是网络与新媒体。",
+      "page": "about.html",
+      "bodyHtml": "<div class=\"pb-timeline\"><article><p>2026.06-</p><div><h3>西安纬度网络科技</h3><span>AI 类目编导：三条内容赛道 + 两款 Godot 游戏全流程策划。</span></div></article><article><p>2026.02-06</p><div><h3>Newegg 新蛋</h3><span>电商产品经理实习生：竞品调研、差异化方案与转化复盘。</span></div></article><article><p>2023.06-09</p><div><h3>闻泰科技 · 荣耀平板</h3><span>产品运营实习生：知识库建设，自助查询率 +40%，咨询量 -20%。</span></div></article><article><p>2022-2026</p><div><h3>西安欧亚学院</h3><span>网络与新媒体本科 · 影视编导方向，获陕西省大学生广播电视公益广告创意剧本奖。</span></div></article></div>"
+    },
+    {
+      "code": "PHASE 7 · WANING CRESCENT",
+      "name": "联系",
+      "en": "WANING CRESCENT",
+      "title": "找到我",
+      "line": "邮件、电话都行，想玩 Demo 也可以。",
+      "page": "about.html#contact",
+      "bodyHtml": "<ul class=\"pb-list\"><li><strong>2126431683@qq.com</strong><span>邮件</span></li><li><strong>192 7945 9077</strong><span>电话</span></li></ul><div class=\"pb-actions\"><a href=\"release-the-witch-game.html\">放开那个女巫 · Play</a><a class=\"pb-ghost\" href=\"emberfall-game.html\">余烬之城 · Play</a></div>"
+    }
+  ],
+  "contact": {
+    "kicker": "CONTACT / 联系",
+    "title": "下一套系统，<br>一起做。",
+    "chips": [
+      {
+        "text": "2126431683@qq.com",
+        "href": "mailto:2126431683@qq.com"
+      },
+      {
+        "text": "192 7945 9077",
+        "href": "tel:19279459077"
+      },
+      {
+        "text": "下载简历 PDF",
+        "href": "assets/陈黄勇_产品经理_系统策划_编导_简历.pdf"
+      }
+    ],
+    "copyright": "© <span data-year>2026</span> 陈黄勇 · CHY.GALAXY —— 以像素为骨，以作品为星"
+  }
+}
