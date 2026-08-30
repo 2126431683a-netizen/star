@@ -1465,6 +1465,7 @@
     window.__moonx = {
       goPhase: goPhase,
       phases: PHASES,
+      refresh: function () { applyPhase(current < 0 ? 0 : current, false); },
       dbg: function () {
         return { current: current, preview: preview, shown: +CUR.shown.toFixed(3), to: +CUR.to.toFixed(3) };
       }
@@ -1558,5 +1559,120 @@
     raf = requestAnimationFrame(frame);
     window.__colorFollow = { cleanup: function () { if (raf) cancelAnimationFrame(raf); } };
   })();
+
+
+  /* ============================================================
+     CONTENT —— 内容文件（content.json）
+     文案统一放在 assets/content.json，供本地管理后台（admin.mjs）
+     修改；加载失败时保持内置文案，站点不受影响。
+     ============================================================ */
+  function setContent(el, html) {
+    if (el && html !== undefined && html !== null) el.innerHTML = html;
+  }
+  function applyContent(c) {
+    try {
+      var q = function (s) { return document.querySelector(s); };
+      var qa = function (s) { return [].slice.call(document.querySelectorAll(s)); };
+
+      if (c.header) {
+        var brand = q('.ph-brand');
+        if (brand && c.header.brand !== undefined) {
+          var mark = brand.querySelector('.ph-brand-mark');
+          var markHtml = mark ? mark.outerHTML : '';
+          brand.innerHTML = markHtml + ' ' + c.header.brand;
+        }
+        qa('.ph-links a').forEach(function (a, i) {
+          if (c.header.nav && c.header.nav[i] !== undefined) a.textContent = c.header.nav[i];
+        });
+      }
+
+      if (c.hero) {
+        setContent(q('.ph-kicker'), c.hero.kicker);
+        var title = q('.ph-title');
+        if (title && (c.hero.titleBefore !== undefined || c.hero.titleHighlight !== undefined)) {
+          title.innerHTML = (c.hero.titleBefore || '') + '<span class="ph-hl">' + (c.hero.titleHighlight || '') + '</span>';
+        }
+        setContent(q('.ph-role'), c.hero.role);
+        setContent(q('.ph-builder .ph-foot-kicker'), c.hero.builderKicker);
+        setContent(q('.ph-builder-note'), c.hero.builderNote);
+        if (c.hero.facts && c.hero.facts.length) {
+          qa('.ph-facts span').forEach(function (sp, i) {
+            var f = c.hero.facts[i];
+            if (f) sp.innerHTML = '<strong>' + f.num + '</strong>' + f.label;
+          });
+        }
+        setContent(q('.ph-tagline .ph-foot-kicker'), c.hero.taglineKicker);
+        setContent(q('.ph-tagline .ph-foot-big'), c.hero.taglineBig);
+        var heroHint = q('#scene-hero .ph-hint span');
+        if (heroHint && c.hero.hint !== undefined) heroHint.textContent = c.hero.hint;
+      }
+
+      if (c.odyssey) {
+        setContent(q('.odyssey-copy .ph-foot-kicker'), c.odyssey.kicker);
+        setContent(q('.odyssey-title'), c.odyssey.title);
+        setContent(q('.odyssey-since'), c.odyssey.since);
+        if (c.odyssey.timeline && c.odyssey.timeline.length) {
+          qa('.ody-node').forEach(function (node, i) {
+            var t = c.odyssey.timeline[i];
+            if (t) node.innerHTML = '<span class="ody-dot"></span><strong>' + t.year + '</strong><small>' + t.label + '</small>';
+          });
+        }
+        var lines = q('.odyssey-lines');
+        if (lines && c.odyssey.lineZh !== undefined) {
+          lines.innerHTML = c.odyssey.lineZh + '<br><span class="en">' + (c.odyssey.lineEn || '') + '</span>';
+        }
+        setContent(q('.ody-about-head'), c.odyssey.aboutHead);
+        if (c.odyssey.about && c.odyssey.about.length) {
+          qa('.ody-about p').forEach(function (p2, i) {
+            if (c.odyssey.about[i] !== undefined) p2.textContent = c.odyssey.about[i];
+          });
+        }
+        var odyHint = q('#odyssey .ph-hint span');
+        if (odyHint && c.odyssey.hint !== undefined) odyHint.textContent = c.odyssey.hint;
+      }
+
+      if (c.solar) {
+        setContent(q('.moon-page-title'), c.solar.pageTitle);
+        var hintEl2 = document.getElementById('moon-open-hint');
+        if (hintEl2 && c.solar.openHint !== undefined) hintEl2.textContent = c.solar.openHint;
+      }
+
+      if (c.phases && window.__moonx && window.__moonx.phases) {
+        c.phases.forEach(function (p3, i) {
+          var ph = window.__moonx.phases[i];
+          if (!ph || !p3) return;
+          ['code', 'name', 'en', 'title', 'line', 'page'].forEach(function (k) {
+            if (p3[k] !== undefined) ph[k] = p3[k];
+          });
+          if (p3.bodyHtml !== undefined && p3.bodyHtml !== '') {
+            var html = p3.bodyHtml;
+            ph.body = function () { return html; };
+          }
+        });
+        if (window.__moonx.refresh) window.__moonx.refresh();
+      }
+
+      if (c.contact) {
+        setContent(q('.scene-contact .ph-foot-kicker'), c.contact.kicker);
+        setContent(q('.ph-contact-title'), c.contact.title);
+        if (c.contact.chips && c.contact.chips.length) {
+          qa('.ph-contact-chip').forEach(function (a, i) {
+            var ch = c.contact.chips[i];
+            if (ch) {
+              a.textContent = ch.text;
+              a.href = ch.href;
+            }
+          });
+        }
+        var small = q('.scene-contact small');
+        if (small && c.contact.copyright !== undefined) small.innerHTML = c.contact.copyright;
+      }
+    } catch (e) { /* 内容格式异常时保持内置文案 */ }
+  }
+
+  fetch('assets/content.json', { cache: 'no-cache' })
+    .then(function (r) { return r.ok ? r.json() : null; })
+    .then(function (c) { if (c) applyContent(c); })
+    .catch(function () { /* 无 content.json 时使用内置文案 */ });
 
 })();

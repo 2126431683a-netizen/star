@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CHY.GALAXY · 内容管理后台</title>
+<style>
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: #060608; color: #eee;
+    font-family: "Fusion Pixel 12px Mono zh_hans", Consolas, "Microsoft YaHei", monospace;
+    font-size: 14px; line-height: 1.7;
+  }
+  header {
+    position: sticky; top: 0; z-index: 10;
+    display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+    padding: 14px 22px; background: rgba(10,10,14,.95); border-bottom: 1px solid #2a2a30;
+  }
+  header h1 { font-size: 16px; margin: 0; letter-spacing: .12em; }
+  header .sp { flex: 1; }
+  button {
+    font: inherit; padding: 8px 16px; cursor: pointer; border-radius: 8px;
+    border: 1px solid #555; background: #15151b; color: #eee;
+  }
+  button:hover { border-color: #aaa; }
+  button.primary { background: #f2f2f2; color: #111; border-color: #f2f2f2; font-weight: 700; }
+  button:disabled { opacity: .5; cursor: wait; }
+  main { max-width: 980px; margin: 0 auto; padding: 20px 22px 80px; }
+  details {
+    border: 1px solid #26262e; border-radius: 12px; margin: 14px 0;
+    background: #0c0c10;
+  }
+  summary { cursor: pointer; padding: 12px 18px; font-weight: 700; letter-spacing: .08em; color: #ddd; }
+  summary:hover { color: #fff; }
+  .body { padding: 6px 18px 18px; }
+  label { display: block; margin: 14px 0 4px; color: #9a9aa4; font-size: 12px; letter-spacing: .06em; }
+  input[type=text], textarea {
+    width: 100%; background: #101016; color: #eee; border: 1px solid #33333d;
+    border-radius: 8px; padding: 8px 10px; font: inherit;
+  }
+  textarea { min-height: 84px; resize: vertical; line-height: 1.6; }
+  textarea.code { font-family: Consolas, monospace; font-size: 13px; }
+  .hint { color: #77777f; font-size: 12px; margin-top: 2px; }
+  .row { display: flex; gap: 12px; }
+  .row > * { flex: 1; }
+  .status {
+    position: fixed; left: 50%; bottom: 18px; transform: translateX(-50%);
+    max-width: 92vw; padding: 10px 18px; border-radius: 10px; font-size: 13px;
+    background: #101016; border: 1px solid #3a3a44; box-shadow: 0 6px 30px rgba(0,0,0,.6);
+    white-space: pre-wrap; display: none;
+  }
+  .status.ok { border-color: #3f7f4f; }
+  .status.err { border-color: #a33; }
+  a { color: #9db8e8; }
+  .loading { color: #888; padding: 30px 0; text-align: center; }
+</style>
+</head>
+<body>
+<header>
+  <h1>CHY.GALAXY · 内容管理后台</h1>
+  <span class="sp"></span>
+  <a href="http://127.0.0.1:8636/index.html" target="_blank">打开本地预览</a>
+  <a href="https://2126431683a-netizen.github.io/star/" target="_blank">打开线上网站</a>
+  <button id="btn-reload" type="button">重新加载</button>
+  <button id="btn-save" type="button">仅保存</button>
+  <button id="btn-push" type="button" class="primary">保存并推送上线</button>
+</header>
+
+<main id="form">
+  <p class="loading">正在加载内容…</p>
+</main>
+<div class="status" id="status"></div>
+
+<script>
+const FORM = document.getElementById('form');
+const STATUS = document.getElementById('status');
+let content = null;
+
+function show(msg, ok) {
+  STATUS.textContent = msg;
+  STATUS.className = 'status ' + (ok ? 'ok' : 'err');
+  STATUS.style.display = 'block';
+  clearTimeout(show._t);
+  show._t = setTimeout(() => { STATUS.style.display = 'none'; }, ok ? 5000 : 12000);
+}
+
+const getPath = (o, p) => p.split('.').reduce((a, k) => (a == null ? a : a[k]), o);
+function setPath(o, p, v) {
+  const ks = p.split('.');
+  const last = ks.pop();
+  const tgt = ks.reduce((a, k) => a[k], o);
+  tgt[last] = v;
+}
+const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
+
+function field(label, path, value, opts = {}) {
+  const rows = opts.rows || 0;
+  const cls = opts.code ? ' class="code"' : '';
+  const hint = opts.hint ? `<div class="hint">${opts.hint}</div>` : '';
+  const ctrl = rows
+    ? `<textarea data-path="${path}"${cls} rows="${rows}">${esc(value)}</textarea>`
+    : `<input type="text" data-path="${path}" value="${esc(value)}">`;
+  return `<label>${label}</label>${ctrl}${hint}`;
+}
+
+function render(c) {
+  let h = '';
+
+  h += `<details open><summary>页头 / 导航</summary><div class="body">`;
+  h += field('站名（左上角）', 'header.brand', c.header.brand);
+  ['项目终端', '关于我', '运营', '月亮手册'].forEach((n, i) => {
+    h += field(`导航 ${i + 1}（${n}）`, `header.nav.${i}`, c.header.nav[i]);
+  });
+  h += `</div></details>`;
+
+  h += `<details open><summary>首屏（着陆）</summary><div class="body">`;
+  h += field('小标（kicker）', 'hero.kicker', c.hero.kicker);
+  h += field('主标题 · 前半', 'hero.titleBefore', c.hero.titleBefore);
+  h += field('主标题 · 高亮部分', 'hero.titleHighlight', c.hero.titleHighlight);
+  h += field('身份行', 'hero.role', c.hero.role);
+  h += field('Game builder 小标', 'hero.builderKicker', c.hero.builderKicker);
+  h += field('Game builder 说明（支持 &lt;br&gt; 换行）', 'hero.builderNote', c.hero.builderNote, { rows: 3, code: true });
+  c.hero.facts.forEach((f, i) => {
+    h += `<div class="row">`;
+    h += field(`数据 ${i + 1} · 数字`, `hero.facts.${i}.num`, f.num);
+    h += field(`数据 ${i + 1} · 文字`, `hero.facts.${i}.label`, f.label);
+    h += `</div>`;
+  });
+  h += field('右下小标', 'hero.taglineKicker', c.hero.taglineKicker);
+  h += field('右下大字（支持 &lt;br&gt;）', 'hero.taglineBig', c.hero.taglineBig, { rows: 2, code: true });
+  h += field('底部按钮文字', 'hero.hint', c.hero.hint);
+  h += `</div></details>`;
+
+  h += `<details><summary>第二屏（Odyssey / 履历）</summary><div class="body">`;
+  h += field('小标', 'odyssey.kicker', c.odyssey.kicker);
+  h += field('标题', 'odyssey.title', c.odyssey.title);
+  h += field('时间范围行', 'odyssey.since', c.odyssey.since);
+  c.odyssey.timeline.forEach((t, i) => {
+    h += field(`时间线 ${i + 1} · 年份`, `odyssey.timeline.${i}.year`, t.year);
+    h += field(`时间线 ${i + 1} · 说明（支持 &lt;br&gt;）`, `odyssey.timeline.${i}.label`, t.label, { rows: 2, code: true });
+  });
+  h += field('一句话（中文）', 'odyssey.lineZh', c.odyssey.lineZh);
+  h += field('一句话（英文小字）', 'odyssey.lineEn', c.odyssey.lineEn);
+  h += field('「关于这个网页」小标', 'odyssey.aboutHead', c.odyssey.aboutHead);
+  c.odyssey.about.forEach((a, i) => {
+    h += field(`关于段落 ${i + 1}`, `odyssey.about.${i}`, a, { rows: 3 });
+  });
+  h += field('底部按钮文字', 'odyssey.hint', c.odyssey.hint);
+  h += `</div></details>`;
+
+  h += `<details><summary>月亮手册（页标题 / 提示）</summary><div class="body">`;
+  h += field('页面顶部标题', 'solar.pageTitle', c.solar.pageTitle);
+  h += field('点大月亮提示行', 'solar.openHint', c.solar.openHint);
+  h += `</div></details>`;
+
+  const names = ['① 着陆 NEW MOON', '② 关于我', '③ 项目', '④ 技能', '⑤ 运营', '⑥ 游戏理解', '⑦ 经历', '⑧ 联系'];
+  c.phases.forEach((p, i) => {
+    h += `<details><summary>月相 ${names[i] || i} · ${p.title}</summary><div class="body">`;
+    h += field('相位代号（如 PHASE 0 · NEW MOON）', `phases.${i}.code`, p.code);
+    h += `<div class="row">`;
+    h += field('中文名', `phases.${i}.name`, p.name);
+    h += field('英文名', `phases.${i}.en`, p.en);
+    h += `</div>`;
+    h += field('面板大标题', `phases.${i}.title`, p.title);
+    h += field('一句介绍（月亮下方 / 面板首行）', `phases.${i}.line`, p.line);
+    h += field('点大月亮跳转页（留空 = 不跳转）', `phases.${i}.page`, p.page);
+    h += field('面板正文（HTML，谨慎修改）', `phases.${i}.bodyHtml`, p.bodyHtml, { rows: 10, code: true, hint: '保持 &lt;li&gt;&lt;strong&gt;&lt;span&gt; 等结构与 class 不变，只改文字最安全' });
+    h += `</div></details>`;
+  });
+
+  h += `<details><summary>联系（最后一屏）</summary><div class="body">`;
+  h += field('小标', 'contact.kicker', c.contact.kicker);
+  h += field('大标题（支持 &lt;br&gt;）', 'contact.title', c.contact.title, { rows: 2, code: true });
+  c.contact.chips.forEach((ch, i) => {
+    h += `<div class="row">`;
+    h += field(`胶囊 ${i + 1} · 文字`, `contact.chips.${i}.text`, ch.text);
+    h += field(`胶囊 ${i + 1} · 链接`, `contact.chips.${i}.href`, ch.href);
+    h += `</div>`;
+  });
+  h += field('版权行（含 &lt;span data-year&gt; 年份占位）', 'contact.copyright', c.contact.copyright, { rows: 2, code: true });
+  h += `</div></details>`;
+
+  FORM.innerHTML = h;
+}
+
+async function load() {
+  FORM.innerHTML = '<p class="loading">正在加载内容…</p>';
+  try {
+    const r = await fetch('/api/content');
+    content = await r.json();
+    render(content);
+  } catch (e) {
+    FORM.innerHTML = '<p class="loading">加载失败：' + esc(String(e)) + '</p>';
+  }
+}
+
+async function save(push) {
+  document.querySelectorAll('#form [data-path]').forEach((el) => {
+    setPath(content, el.dataset.path, el.value);
+  });
+  const btns = [document.getElementById('btn-save'), document.getElementById('btn-push')];
+  btns.forEach((b) => { b.disabled = true; });
+  try {
+    const r = await fetch('/api/content' + (push ? '?push=1' : ''), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(content, null, 2)
+    });
+    const res = await r.json();
+    if (res.ok) {
+      show((res.message || (res.pushed ? '已保存并推送！' : '已保存到本地')) + (res.detail ? '\n' + res.detail : ''), true);
+    } else {
+      show('出错了：' + (res.error || '未知错误'), false);
+    }
+  } catch (e) {
+    show('请求失败：' + String(e), false);
+  } finally {
+    btns.forEach((b) => { b.disabled = false; });
+  }
+}
+
+document.getElementById('btn-save').addEventListener('click', () => save(false));
+document.getElementById('btn-push').addEventListener('click', () => save(true));
+document.getElementById('btn-reload').addEventListener('click', load);
+load();
+</script>
+</body>
+</html>
