@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="description" content="《KERNEL PANIC 内核恐慌》割草生存游戏项目档案。"><title>KERNEL PANIC | 项目档案</title>
+  <link rel="stylesheet" href="assets/site.css?v=2026-08-27-31"><script src="assets/site.js?v=2026-08-27-23" defer></script>
+<link rel="stylesheet" href="assets/fx.css?v=2026-08-28-34">
+  <script src="assets/fx.js?v=2026-08-30-5" defer></script>
+</head>
+<body data-page="projects">
+  <a class="skip-link" href="#main">跳到主要内容</a>
+  <nav class="site-nav" aria-label="主导航"><div class="shell nav-inner"><a class="brand" href="index.html"><span class="brand-mark">CHY</span><span class="brand-copy"><strong>陈黄勇</strong><span>产品 · 运营 · 编导</span></span></a><button class="menu-button" type="button" aria-expanded="false" aria-label="打开导航"><span class="menu-glyph"></span></button><div class="nav-links"><a href="index.html#scene-hero" data-nav="home">主界面</a><a href="index.html#scene-solar" data-nav="galaxy">月亮手册</a><a href="game-analysis.html" data-nav="insights">游戏理解</a><a class="nav-cta" href="game/kernel-panic/index.html">网页试玩</a></div></div></nav>
+  <header class="page-hero"><div class="page-hero-media"><img src="assets/portfolio/kernel-panic-title.png" alt="KERNEL PANIC 标题画面"></div><div class="shell page-hero-copy" data-reveal><p class="kicker">07 / Survivor Arena</p><h1 class="page-title">KERNEL PANIC 内核恐慌</h1><p class="page-lead">二次元动漫风的割草生存 Roguelite：你是系统管理员 @，被困在失控的北京生产节点，用自动火力清剿敌对进程，捡经验数据包、注入升级补丁，活到下一次系统重启。</p><div class="action-row"><a class="button button-primary" href="game/kernel-panic/index.html">网页直接试玩</a><a class="button button-ghost" href="https://github.com/2126431683a-netizen/kernel-panic/releases/download/v2.2/KERNEL_PANIC_v2.2_win64.zip">下载 Win64 版</a><a class="button button-ghost" href="kernel-panic.html">项目主页</a></div></div></header>
+  <main id="main">
+    <section class="section"><div class="shell detail-layout">
+      <aside class="detail-aside" data-reveal><p class="project-code">Role / Scope</p><h2>独立开发<br>策划 + 程序 + 美术管线</h2><p>从 PRD、GDD 到 GDScript 实现与 AI 美术资产管线全流程单人完成，数值参数集中在单一配置文件便于持续调优。</p><ul class="fact-list"><li><span>引擎</span><strong>Godot 4.7</strong></li><li><span>类型</span><strong>割草生存 Roguelite</strong></li><li><span>平台</strong><strong>Web / Windows</strong></li><li><span>状态</strong><strong>v2.2 已发布</strong></li><li><span>协议</span><strong>Apache-2.0</strong></li></ul></aside>
+      <div>
+        <div class="decision-list" data-reveal>
+          <article class="decision"><span class="decision-index">A / Fantasy</span><div><h3>把「杀进程」做成世界观</h3><p>敌人是 glitch、疾行、石狮卫士与神龙进程，每次击杀都在终端打印 kill -9 PID —— 主题、美术与反馈语言完全统一。</p></div></article>
+          <article class="decision"><span class="decision-index">B / Core Loop</span><div><h3>自动火力 + 走位取舍</h3><p>火力自动清怪，玩家的决策集中在走位、捡取经验数据包与升级补丁的构筑选择，单局节奏紧凑。</p></div></article>
+          <article class="decision"><span class="decision-index">C / Build</span><div><h3>3 槽位武器 + 12 种补丁构筑</h3><p>高频扳手、回旋扳手、引雷术三种武器与普通/稀有/史诗三档补丁，配合精英宝箱、磁铁与可破坏物形成 Build 深度。</p></div></article>
+          <article class="decision"><span class="decision-index">D / Pipeline</span><div><h3>参数集中 + AI 美术管线</h3><p>全部可调数值收敛到 game_config.gd 单文件；角色逐帧行走动画走 sprite-gen 管线生成，11+ 张 AI 生成资产。</p></div></article>
+        </div>
+        <div class="metric-grid" data-reveal><div class="metric"><strong>3</strong><span>武器槽位</span></div><div class="metric"><strong>12</strong><span>升级补丁种类</span></div><div class="metric"><strong>5:00</strong><span>BOSS 巨型进程王</span></div><div class="metric"><strong>~1500</strong><span>行 GDScript</span></div><div class="metric"><strong>11+</strong><span>AI 生成资产</span></div><div class="metric"><strong>v2.2</strong><span>当前发布版本</span></div></div>
+      </div>
+    </div></section>
+    <section class="section section-light" id="gallery"><div class="shell"><header class="section-head" data-reveal><p class="section-code">Visual Proof</p><div><h2>可验证画面</h2><p>标题画面、开局战斗与竞技场背景分别对应入口、核心循环与美术管线产出。</p></div></header><div class="gallery" data-reveal><button class="gallery-shot" type="button" data-lightbox="assets/portfolio/kernel-panic-gameplay.png" data-caption="开局战斗：自动火力 + 走位捡取数据包"><img src="assets/portfolio/kernel-panic-gameplay.png" alt="开局战斗画面"></button><button class="gallery-shot" type="button" data-lightbox="assets/portfolio/kernel-panic-title.png" data-caption="标题画面：二次元北京篇"><img src="assets/portfolio/kernel-panic-title.png" alt="标题画面"></button><button class="gallery-shot" type="button" data-lightbox="assets/portfolio/kernel-panic-arena.png" alt="竞技场背景"><img src="assets/portfolio/kernel-panic-arena.png" alt="竞技场背景"></button></div></div></section>
+  </main>
+  <section class="contact-band"><div class="shell contact-grid"><h2>继续查看<br><span>下一份档案</span>。</h2><div class="contact-links"><a href="project-witch.html"><span>01 / 放开那个女巫</span><span>-&gt;</span></a><a href="projects.html"><span>返回项目中心</span><span>-&gt;</span></a></div></div></section>
+  <footer class="site-footer"><div class="shell footer-inner"><span>© <span data-year>2026</span> 陈黄勇</span><span>Project File 07 / 10</span></div></footer>
+  <dialog class="lightbox" aria-label="项目图片预览"><img src="" alt=""><div class="lightbox-bar"><p class="lightbox-caption"></p><button class="icon-button lightbox-close" type="button" aria-label="关闭预览">X</button></div></dialog>
+</body>
+</html>
