@@ -92,7 +92,9 @@ const APP = document.getElementById('app');
 const STATUS = document.getElementById('status');
 const BADGE = document.getElementById('mode-badge');
 const AUTH_AREA = document.getElementById('auth-area');
-const LS_CFG = 'chy_admin_cfg', SS_TOK = 'chy_admin_tok';
+const LS_CFG = 'chy_admin_cfg', SS_TOK = 'chy_admin_tok', LS_PAT = 'chy_admin_pat';
+function anyToken() { return sessionStorage.getItem(SS_TOK) || localStorage.getItem(LS_PAT); }
+function clearTokens() { sessionStorage.removeItem(SS_TOK); localStorage.removeItem(LS_PAT); }
 
 let content = null, cloudSha = null, cloudApi = null;
 
@@ -174,11 +176,11 @@ async function finishOAuth() {
   return true;
 }
 
-function logoutCloud() { sessionStorage.removeItem(SS_TOK); location.reload(); }
+function logoutCloud() { clearTokens(); location.reload(); }
 
 async function cloudLoad() {
   const c = cfg();
-  const tok = sessionStorage.getItem(SS_TOK);
+  const tok = anyToken();
   if (!tok) return { needAuth: true };
   const r = await fetch(`https://api.github.com/repos/${c.owner}/${c.repo}/contents/assets/content.json?ref=${c.branch}`, { headers: ghHeaders(tok) });
   if (r.status === 401) return { needAuth: true, bad: true };
@@ -190,7 +192,7 @@ async function cloudLoad() {
 
 async function cloudSave(text) {
   const c = cfg();
-  const tok = sessionStorage.getItem(SS_TOK);
+  const tok = anyToken();
   const r = await fetch(`https://api.github.com/repos/${c.owner}/${c.repo}/contents/assets/content.json`, {
     method: 'PUT', headers: ghHeaders(tok),
     body: JSON.stringify({
@@ -415,7 +417,7 @@ function renderSetup(reason) {
       3. <b>Authorization callback URL 必须填：</b>${esc(location.origin + location.pathname)}<br>
       4. 创建后复制 Client ID 粘贴到上面，点授权按钮。</p>
     <p class="hint">—— 或者 ——</p>
-    <label>个人访问令牌（PAT，快速方式；需 repo 权限，保存在本机浏览器）</label>
+    <label>个人访问令牌（PAT，快速方式；需 repo 权限）——会记住在本机浏览器，点「退出登录」可清除</label>
     <input type="text" id="cfg-pat" class="code" placeholder="ghp_ 或 github_pat_ 开头">
     <button type="button" id="btn-pat" style="margin-top:10px">用 PAT 登录</button>
   </div>`;
@@ -428,6 +430,7 @@ function renderSetup(reason) {
     const tok = val('cfg-pat').trim();
     if (!tok) return show('请先粘贴 PAT', false);
     saveCfg({ ...cfg(), owner: val('cfg-owner'), repo: val('cfg-repo'), branch: val('cfg-branch') });
+    localStorage.setItem(LS_PAT, tok);
     sessionStorage.setItem(SS_TOK, tok);
     await boot();
   });
@@ -444,7 +447,7 @@ async function boot() {
   }
   const c = cfg();
   const hadCode = await finishOAuth();
-  const tok = sessionStorage.getItem(SS_TOK);
+  const tok = anyToken();
   if (!tok) {
     BADGE.textContent = '在线模式 · 未登录';
     BADGE.className = 'badge err';
@@ -459,7 +462,7 @@ async function boot() {
   document.getElementById('btn-logout').addEventListener('click', logoutCloud);
   const res = await cloudLoad();
   if (res.needAuth) {
-    sessionStorage.removeItem(SS_TOK);
+    clearTokens();
     BADGE.textContent = '在线模式 · 登录失效';
     BADGE.className = 'badge err';
     renderSetup(res.bad ? '令牌无效或权限不足（PAT 需要 repo 权限），请重新登录。' : '');
