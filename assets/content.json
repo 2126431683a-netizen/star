@@ -165,7 +165,7 @@
     {
       "name": "KERNEL PANIC 内核恐慌",
       "tag": "Godot 4.7 · 割草生存（北京篇）",
-      "href": "kernel-panic.html",
+      "href": "project-kernelpanic.html",
       "images": [
         "assets/portfolio/kernel-panic-arena.png"
       ],
@@ -181,12 +181,12 @@
           "href": "game/kernel-panic/index.html"
         },
         {
-          "text": "项目主页 →",
-          "href": "kernel-panic.html"
-        },
-        {
           "text": "下载 Win64",
           "href": "https://github.com/2126431683a-netizen/kernel-panic/releases/download/v2.2/KERNEL_PANIC_v2.2_win64.zip"
+        },
+        {
+          "text": "项目主页",
+          "href": "kernel-panic.html"
         },
         {
           "text": "源码仓库",
