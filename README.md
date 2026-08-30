@@ -10,18 +10,28 @@
 
 网站所有文案集中在 `assets/content.json`，改它就行，不用碰代码。
 
+### 在线后台（手机 / 任何电脑）
+
+直接打开 **https://2126431683a-netizen.github.io/star/admin.html**
+
+首次使用需要 2 分钟配置一次 GitHub 授权：
+
+1. 打开 github.com/settings/developers → 「New OAuth App」
+2. Application name 随意；Homepage 随意
+3. **Authorization callback URL 必须填：** `https://2126431683a-netizen.github.io/star/admin.html`
+4. 创建后复制 Client ID，粘贴进后台的配置页，点「用 GitHub 授权并开始编辑」
+
+之后保存在线后台 = 直接提交到本仓库，网站约 1 分钟自动更新。
+
+### 本地后台（这台电脑）
+
 ```bash
 node admin.mjs
 ```
 
-然后浏览器打开 **http://localhost:8642**：
+浏览器打开 **http://localhost:8642**（功能相同，推送走本地 git）。
 
-- 按分区编辑：页头导航 / 首屏 / Odyssey 履历 / 月亮手册八个月相 / 联系
-- **仅保存**：只写到本地（草稿，不上线）
-- **保存并推送上线**：自动 git 提交并推送，GitHub Pages 约 1 分钟后更新网站
-- 「重新加载」可放弃当前未保存的修改
-
-要求：本机装有 Node.js 和 git，且本仓库的 git 推送已登录（首次可用 `gh auth setup-git`）。
+共同功能：按分区编辑文案；「项目管理」分区可**添加 / 删除 / 排序项目**（截图先把图片文件放进仓库 `assets/portfolio/`）；「仅保存」为本地草稿。
 
 ## 本地预览
 
