@@ -76,7 +76,7 @@
       "title": "月球手册",
       "line": "点下面的小月亮切换内容。八个阶段，八段东西，全在这一个页面里。",
       "page": "",
-      "bodyHtml": "<ul class=\"pb-list\"><li><strong>06</strong><span>个项目档案，截图和要点都在下面</span></li><li><strong>05</strong><span>个可运行 Demo，点了就能玩</span></li><li><strong>30%</strong><span>内容上过热搜，单条最高 300 万播放</span></li><li><strong>08</strong><span>个月相 = 8 段内容，没有第二层页面</span></li></ul>"
+      "bodyHtml": "<ul class=\"pb-list\"><li><strong>09</strong><span>个项目档案，截图和要点都在下面</span></li><li><strong>05</strong><span>个可运行 Demo，点了就能玩</span></li><li><strong>30%</strong><span>内容上过热搜，单条最高 300 万播放</span></li><li><strong>08</strong><span>个月相 = 8 段内容，没有第二层页面</span></li></ul>"
     },
     {
       "code": "PHASE 1 · WAXING CRESCENT",
@@ -92,7 +92,7 @@
       "name": "项目",
       "en": "FIRST QUARTER",
       "title": "做过的项目",
-      "line": "六个项目，点开就能看：女巫、暮鸦、雾港、塔防、HotPick、余烬。",
+      "line": "项目档案加点新的：游戏、产品、运营、跨境电商，点开就能看。",
       "page": "projects.html",
       "bodyHtml": ""
     },
@@ -162,6 +162,42 @@
     "copyright": "© <span data-year>2026</span> 陈黄勇 · CHY.GALAXY —— 以像素为骨，以作品为星"
   },
   "projects": [
+    {
+      "name": "跨境电商运营实践",
+      "tag": "电商 · 运营",
+      "href": "",
+      "images": [],
+      "bullets": [
+        "跨境电商店铺运营：选品、Listing 优化与日常维护",
+        "跨时区协作与订单/物流链路跟进",
+        "【待补充】平台名称、负责品类与业绩数据"
+      ],
+      "links": []
+    },
+    {
+      "name": "荣耀平板 · 产品运营",
+      "tag": "闻泰科技 · 产品运营实习",
+      "href": "",
+      "images": [],
+      "bullets": [
+        "负责荣耀平板支持站点的知识库建设",
+        "自助查询率 +40%，咨询量 -20%",
+        "用户反馈整理 → 产品侧改进建议"
+      ],
+      "links": []
+    },
+    {
+      "name": "CHY.GALAXY 本站",
+      "tag": "Canvas / WebGL2 · 个人网站",
+      "href": "index.html",
+      "images": [],
+      "bullets": [
+        "整站手写：月球手册交互、粒子与着色器特效",
+        "场景式单页 + 本地/在线内容后台",
+        "GitHub Pages 部署，无框架依赖"
+      ],
+      "links": []
+    },
     {
       "name": "放开那个女巫：灰堡黎明",
       "tag": "Godot 4 · 卡牌回合 RPG",
@@ -276,5 +312,6 @@
         }
       ]
     }
-  ]
+  ],
+  "pages": []
 }

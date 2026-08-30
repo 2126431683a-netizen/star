@@ -1616,6 +1616,23 @@
         if (heroHint && c.hero.hint !== undefined) heroHint.textContent = c.hero.hint;
       }
 
+      // 后台添加的自定义页面：勾「加入导航」的出现在右上角导航
+      if (c.pages && c.pages.length) {
+        var nav = q('.ph-links');
+        if (nav) {
+          qa('.ph-links .nav-page-link').forEach(function (a) { a.remove(); });
+          c.pages.forEach(function (p5) {
+            if (p5.inNav && p5.slug && p5.title) {
+              var a = document.createElement('a');
+              a.href = p5.slug + '.html';
+              a.className = 'nav-page-link';
+              a.textContent = p5.title;
+              nav.appendChild(a);
+            }
+          });
+        }
+      }
+
       if (c.odyssey) {
         setContent(q('.odyssey-copy .ph-foot-kicker'), c.odyssey.kicker);
         setContent(q('.odyssey-title'), c.odyssey.title);

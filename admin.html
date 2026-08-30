@@ -249,9 +249,12 @@ function renderProjects() {
 function render(c) {
   let h = '';
 
+  h += `<details open><summary>访问统计（每天有多少人看过）</summary><div class="body" id="stats-body"><span class="hint">加载中…</span></div></details>`;
+
   h += `<details open><summary>页头 / 导航</summary><div class="body">`;
   h += field('站名（左上角）', 'header.brand', c.header.brand);
   ['项目终端', '关于我', '运营', '月亮手册'].forEach((n, i) => h += field(`导航 ${i + 1}（${n}）`, `header.nav.${i}`, c.header.nav[i]));
+  h += `<div class="hint">下方「页面管理」里勾了「加入导航」的自定义页面，也会出现在右上角导航。</div>`;
   h += `</div></details>`;
 
   h += `<details open><summary>首屏（着陆）</summary><div class="body">`;
@@ -282,6 +285,16 @@ function render(c) {
   h += field('「关于这个网页」小标', 'odyssey.aboutHead', c.odyssey.aboutHead);
   c.odyssey.about.forEach((a, i) => h += field(`关于段落 ${i + 1}`, `odyssey.about.${i}`, a, { rows: 3 }));
   h += field('底部按钮文字', 'odyssey.hint', c.odyssey.hint);
+  h += `</div></details>`;
+
+  h += `<details><summary>页面管理（添加独立网页）</summary><div class="body">`;
+  h += `<div class="hint">添加独立网页：自动生成「短名.html」，标题和内容在这里编辑，勾「加入导航」会出现在主页右上角导航。</div>`;
+  h += `<div id="page-list">${renderPages()}</div>`;
+  h += `<label style="margin-top:16px">新页面 · 英文短名（URL 文件名，如 my-story）</label>
+  <input type="text" id="new-page-slug" class="code" placeholder="my-story">
+  <label>新页面 · 标题</label>
+  <input type="text" id="new-page-title" placeholder="我的故事">
+  <button type="button" class="primary" id="btn-addpage" style="margin-top:12px">＋ 添加页面</button>`;
   h += `</div></details>`;
 
   h += `<details><summary>项目管理（第三屏「项目」面板）</summary><div class="body">`;
@@ -323,6 +336,181 @@ function render(c) {
 
   APP.innerHTML = h;
   bindProjButtons();
+  bindPageButtons();
+  loadStats();
+}
+
+/* ---------------- 访问统计（abacus 公共计数，无需注册） ---------------- */
+const NS_STATS = 'chy-galaxy';
+function dayKey(offset) {
+  const d = new Date(Date.now() - (offset || 0) * 86400000);
+  return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2);
+}
+async function getCount(key) {
+  try {
+    const r = await fetch('https://abacus.jasoncameron.dev/get/' + NS_STATS + '/' + key + '?c=' + Date.now());
+    const j = await r.json();
+    return +j.value || 0;
+  } catch { return -1; }
+}
+async function loadStats() {
+  const box = document.getElementById('stats-body');
+  if (!box) return;
+  const today = dayKey(0);
+  const days = [];
+  for (let i = 0; i < 7; i++) days.push(dayKey(i));
+  const [pv, uv, total, ...week] = await Promise.all([
+    getCount('pv-' + today), getCount('uv-' + today), getCount('total'),
+    ...days.map(d => getCount('pv-' + d))
+  ]);
+  const fmt = (n) => n < 0 ? '—' : n;
+  let rows = '';
+  for (let i = days.length - 1; i >= 0; i--) {
+    rows += `<div class="row"><span>${days[i]}${i === 0 ? '（今天）' : ''}</span><b>${fmt(week[i])}</b></div>`;
+  }
+  box.innerHTML = `
+    <div class="row">
+      <div>今天浏览 <b style="font-size:22px">${fmt(pv)}</b> 次</div>
+      <div>今天访客 <b style="font-size:22px">${fmt(uv)}</b> 人次</div>
+      <div>总浏览 <b style="font-size:22px">${fmt(total)}</b> 次</div>
+    </div>
+    <div style="margin-top:14px">${rows}</div>
+    <div class="hint">按页面浏览（PV）计；「访客」按浏览器每天去重。数据来自公共计数服务，自己打开网站也会计入。</div>
+    <button type="button" class="small" id="btn-stats-refresh" style="margin-top:8px">刷新统计</button>`;
+  document.getElementById('btn-stats-refresh').addEventListener('click', loadStats);
+}
+
+/* ---------------- 页面管理（自定义页面） ---------------- */
+function pageTemplate(slug, title) {
+  return '<!DOCTYPE html>\n<html lang="zh-CN">\n<head>\n<meta charset="UTF-8">\n' +
+    '<meta name="viewport" content="width=device-width, initial-scale=1.0">\n' +
+    '<title>' + title + ' | CHY Galaxy</title>\n' +
+    '<meta name="description" content="' + title + '">\n' +
+    '<link rel="stylesheet" href="assets/site.css">\n' +
+    '<link rel="stylesheet" href="assets/home.css">\n' +
+    '</head>\n<body data-page="custom">\n' +
+    '<header class="ph-header">\n' +
+    '  <a class="ph-brand" href="index.html"><span class="ph-brand-mark" aria-hidden="true"></span>CHY.GALAXY</a>\n' +
+    '  <nav class="ph-links" aria-label="主导航"><a href="index.html">主页</a></nav>\n' +
+    '</header>\n' +
+    '<main class="custom-page">\n' +
+    '  <h1 class="custom-title"></h1>\n' +
+    '  <div class="custom-body"></div>\n' +
+    '  <a class="custom-back" href="index.html">← 返回主页</a>\n' +
+    '</main>\n' +
+    '<script src="assets/custom-page.js"><' + '/script>\n' +
+    '</body>\n</html>\n';
+}
+
+function renderPages() {
+  if (!content.pages) content.pages = [];
+  return content.pages.map((p, i) => `
+  <div class="proj" data-page-idx="${i}">
+    <div class="proj-head">
+      <strong>${i + 1}. ${esc(p.title || p.slug)}</strong>
+      <a class="small" href="${esc(p.slug)}.html" target="_blank" style="text-decoration:none;border:1px solid #555;border-radius:8px;padding:3px 10px;font-size:12px">打开</a>
+      <button class="small danger" type="button" data-pact="del" data-i="${i}">删除页面</button>
+    </div>
+    <label>标题</label><input type="text" data-pg="${i}" data-k="title" value="${esc(p.title)}">
+    <label><input type="checkbox" data-pg="${i}" data-k="inNav" ${p.inNav ? 'checked' : ''} style="width:auto"> 加入主页右上角导航</label>
+    <label>正文（支持 HTML）</label>
+    <textarea data-pg="${i}" data-k="body" rows="8" class="code">${esc(p.body || '')}</textarea>
+    <div class="hint">网址：${esc(p.slug)}.html</div>
+  </div>`).join('');
+}
+
+function collectPagesFromDom() {
+  const list = [];
+  document.querySelectorAll('#page-list .proj').forEach((box) => {
+    const i = +box.dataset.pageIdx;
+    const g = (k) => { const el = box.querySelector(`[data-pg="${i}"][data-k="${k}"]`); return el ? (el.type === 'checkbox' ? el.checked : el.value) : ''; };
+    list.push({ slug: content.pages[i] ? content.pages[i].slug : '', title: g('title'), inNav: !!g('inNav'), body: g('body') });
+  });
+  return list;
+}
+function syncPagesToContent() { content.pages = collectPagesFromDom(); }
+
+async function createPageFile(slug, title) {
+  const html = pageTemplate(slug, title);
+  if (MODE === 'local') {
+    const r = await fetch('/api/page', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ slug, html, push: true }) });
+    return r.json();
+  }
+  const c = cfg();
+  const tok = anyToken();
+  const r = await fetch(`https://api.github.com/repos/${c.owner}/${c.repo}/contents/${slug}.html`, {
+    method: 'PUT', headers: ghHeaders(tok),
+    body: JSON.stringify({ message: '添加页面 ' + slug, content: b64utf8(html), branch: c.branch })
+  });
+  if (!r.ok) {
+    const j = await r.json().catch(() => ({}));
+    throw new Error('GitHub API ' + r.status + ' ' + (j.message || ''));
+  }
+  return { ok: true, message: '页面文件已提交' };
+}
+
+async function deletePageFile(slug) {
+  if (MODE === 'local') {
+    const r = await fetch('/api/page?slug=' + encodeURIComponent(slug), { method: 'DELETE' });
+    return r.json();
+  }
+  const c = cfg();
+  const tok = anyToken();
+  const g = await fetch(`https://api.github.com/repos/${c.owner}/${c.repo}/contents/${slug}.html?ref=${c.branch}`, { headers: ghHeaders(tok) });
+  if (g.status === 404) return { ok: true, message: '文件不存在，跳过' };
+  const j = await g.json();
+  const r = await fetch(`https://api.github.com/repos/${c.owner}/${c.repo}/contents/${slug}.html`, {
+    method: 'DELETE', headers: ghHeaders(tok),
+    body: JSON.stringify({ message: '删除页面 ' + slug, sha: j.sha, branch: c.branch })
+  });
+  if (!r.ok) throw new Error('GitHub API ' + r.status);
+  return { ok: true };
+}
+
+function bindPageButtons() {
+  if (_boundPage) return;
+  _boundPage = true;
+  APP.addEventListener('click', async (e) => {
+    const add = e.target.closest('#btn-addpage');
+    const act = e.target.closest('button[data-pact]');
+    if (!add && !act) return;
+    syncProjectsToContent();
+    syncPagesToContent();
+    if (add) {
+      const slug = val('new-page-slug').trim().toLowerCase();
+      const title = val('new-page-title').trim();
+      if (!/^[a-z0-9][a-z0-9-]*$/.test(slug)) return show('短名只能用小写英文、数字和 - ，且以字母或数字开头', false);
+      if (!title) return show('请填写标题', false);
+      if (content.pages.some(p => p.slug === slug)) return show('这个短名已经存在了', false);
+      add.disabled = true;
+      try {
+        const res = await createPageFile(slug, title);
+        content.pages.push({ slug, title, inNav: true, body: '<p>在这里写这个页面的内容（后台编辑）。</p>' });
+        document.getElementById('page-list').innerHTML = renderPages();
+        show((res.message || '页面文件已创建') + '。记得点「保存并推送上线」保存标题和内容！', true);
+      } catch (err) {
+        show('添加页面失败：' + String(err.message || err), false);
+      } finally {
+        add.disabled = false;
+      }
+    } else if (act.dataset.pact === 'del') {
+      const i = +act.dataset.i;
+      const p = content.pages[i];
+      if (!p) return;
+      if (!confirm('删除页面「' + (p.title || p.slug) + '」？网页文件和内容都会删除。')) return;
+      act.disabled = true;
+      try {
+        await deletePageFile(p.slug);
+        content.pages.splice(i, 1);
+        document.getElementById('page-list').innerHTML = renderPages();
+        show('页面已删除。内容修改请点「保存并推送上线」同步。', true);
+      } catch (err) {
+        show('删除失败：' + String(err.message || err), false);
+      } finally {
+        act.disabled = false;
+      }
+    }
+  });
 }
 
 /* ---------------- 项目增删排序 ---------------- */
@@ -343,7 +531,10 @@ function collectProjectsFromDom() {
   return list;
 }
 function syncProjectsToContent() { content.projects = collectProjectsFromDom(); }
+let _boundProj = false;
 function bindProjButtons() {
+  if (_boundProj) return;
+  _boundProj = true;
   APP.addEventListener('click', (e) => {
     const b = e.target.closest('button[data-act], #btn-addproj');
     if (!b) return;
@@ -371,6 +562,7 @@ async function saveLocal(push) {
 
 async function doSave(push) {
   syncProjectsToContent();
+  syncPagesToContent();
   const text = JSON.stringify(content, null, 2) + '\n';
   const btns = [document.getElementById('btn-save'), document.getElementById('btn-push')];
   btns.forEach(b => b.disabled = true);

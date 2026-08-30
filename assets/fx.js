@@ -1,6 +1,22 @@
 (function () {
   'use strict';
 
+  /* ---- 访问统计：PV 每次加载 +1；UV 每浏览器每天 +1（abacus 公共计数） ---- */
+  (function () {
+    try {
+      var NS = 'chy-galaxy';
+      var d = new Date();
+      var day = d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2);
+      new Image().src = 'https://abacus.jasoncameron.dev/hit/' + NS + '/total?c=' + Date.now();
+      new Image().src = 'https://abacus.jasoncameron.dev/hit/' + NS + '/pv-' + day + '?c=' + Date.now();
+      var uvKey = 'chy_uv_' + day;
+      if (!localStorage.getItem(uvKey)) {
+        localStorage.setItem(uvKey, '1');
+        new Image().src = 'https://abacus.jasoncameron.dev/hit/' + NS + '/uv-' + day + '?c=' + Date.now();
+      }
+    } catch (e) { /* 统计失败不影响页面 */ }
+  })();
+
   /* ============================================================
      全站特效层（fx.js —— 首页 + 各级子页面共享）
      1) 固定粒子流光：细尘缓慢上升 + 偶尔的字符余烬，整体呈

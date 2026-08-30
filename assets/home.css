@@ -2321,3 +2321,57 @@ body[data-page="home"].scene-mode .scene-flow > footer {
   border-color: #f2f2f2;
   font-weight: 700;
 }
+
+/* ---- 自定义页面（后台「页面管理」添加） ---- */
+.custom-page {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 110px 24px 80px;
+}
+
+.custom-title {
+  margin: 0 0 22px;
+  font-family: var(--pixel);
+  font-weight: 400;
+  font-size: clamp(24px, 4vw, 40px);
+  letter-spacing: 0.06em;
+  color: #fff;
+  text-shadow: 3px 3px 0 #000;
+}
+
+.custom-body {
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 15px;
+  line-height: 2;
+  letter-spacing: 0.03em;
+}
+
+.custom-body h2,
+.custom-body h3 {
+  font-family: var(--pixel);
+  font-weight: 400;
+  color: #fff;
+  margin: 26px 0 10px;
+}
+
+.custom-body p { margin: 0 0 14px; }
+
+.custom-body img {
+  max-width: 100%;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.custom-body a { color: #9db8e8; }
+
+.custom-back {
+  display: inline-block;
+  margin-top: 30px;
+  color: rgba(255, 255, 255, 0.5);
+  font-family: var(--pixel);
+  font-size: 12px;
+  letter-spacing: 0.15em;
+  text-decoration: none;
+}
+
+.custom-back:hover { color: #fff; }

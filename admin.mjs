@@ -68,6 +68,43 @@ const server = createServer(async (req, res) => {
       return send(res, 200, JSON.stringify({ ok: true, pushed: true, message: '已保存并推送！GitHub Pages 约 1 分钟后自动更新。', detail: out.filter(Boolean).join('\n').slice(0, 600) }));
     }
 
+    // 创建/更新自定义页面文件（html 由管理界面生成）
+    if (url.pathname === '/api/page' && req.method === 'POST') {
+      let raw = '';
+      req.on('data', (c) => { raw += c; });
+      await new Promise((r) => req.on('end', r));
+      let body;
+      try { body = JSON.parse(raw); } catch { return send(res, 400, JSON.stringify({ ok: false, error: '内容不是合法的 JSON' })); }
+      const slug = String(body.slug || '');
+      if (!/^[a-z0-9][a-z0-9-]*$/.test(slug)) return send(res, 400, JSON.stringify({ ok: false, error: '短名不合法' }));
+      await writeFile(join(ROOT, slug + '.html'), String(body.html || ''), 'utf8');
+      if (body.push !== true) return send(res, 200, JSON.stringify({ ok: true, message: '页面文件已保存到本地' }));
+      const out = [];
+      try { out.push(await git(['add', slug + '.html'])); } catch {}
+      try { out.push(await git(['commit', '-m', '添加页面 ' + slug])); } catch {
+        return send(res, 200, JSON.stringify({ ok: true, pushed: false, message: '页面文件没有变化' }));
+      }
+      try { out.push(await git(['push'])); } catch (e) {
+        return send(res, 500, JSON.stringify({ ok: false, error: '保存成功但推送失败：' + String(e.stderr || e.message).slice(0, 300) }));
+      }
+      return send(res, 200, JSON.stringify({ ok: true, pushed: true, message: '页面文件已创建并推送' }));
+    }
+
+    // 删除自定义页面文件
+    if (url.pathname === '/api/page' && req.method === 'DELETE') {
+      const slug = url.searchParams.get('slug') || '';
+      if (!/^[a-z0-9][a-z0-9-]*$/.test(slug)) return send(res, 400, JSON.stringify({ ok: false, error: '短名不合法' }));
+      let removed = false;
+      try { await git(['rm', '-f', slug + '.html']); removed = true; } catch {}
+      if (!removed) return send(res, 200, JSON.stringify({ ok: true, message: '文件不存在，跳过删除' }));
+      const out = [];
+      try { out.push(await git(['commit', '-m', '删除页面 ' + slug])); } catch {}
+      try { out.push(await git(['push'])); } catch (e) {
+        return send(res, 500, JSON.stringify({ ok: false, error: '删除成功但推送失败：' + String(e.stderr || e.message).slice(0, 300) }));
+      }
+      return send(res, 200, JSON.stringify({ ok: true, message: '页面文件已删除并推送' }));
+    }
+
     // 其余路径：不提供任何文件服务（管理后台专用，网站本身走 GitHub Pages / 其他静态服务）
     send(res, 404, JSON.stringify({ ok: false, error: 'not found' }));
   } catch (e) {
