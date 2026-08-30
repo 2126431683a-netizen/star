@@ -76,7 +76,7 @@
       "title": "月球手册",
       "line": "点下面的小月亮切换内容。八个阶段，八段东西，全在这一个页面里。",
       "page": "",
-      "bodyHtml": "<ul class=\"pb-list\"><li><strong>09</strong><span>个项目档案，截图和要点都在下面</span></li><li><strong>05</strong><span>个可运行 Demo，点了就能玩</span></li><li><strong>30%</strong><span>内容上过热搜，单条最高 300 万播放</span></li><li><strong>08</strong><span>个月相 = 8 段内容，没有第二层页面</span></li></ul>"
+      "bodyHtml": "<ul class=\"pb-list\"><li><strong>10</strong><span>个项目档案，截图和要点都在下面</span></li><li><strong>05</strong><span>个可运行 Demo，点了就能玩</span></li><li><strong>30%</strong><span>内容上过热搜，单条最高 300 万播放</span></li><li><strong>08</strong><span>个月相 = 8 段内容，没有第二层页面</span></li></ul>"
     },
     {
       "code": "PHASE 1 · WAXING CRESCENT",
@@ -162,6 +162,34 @@
     "copyright": "© <span data-year>2026</span> 陈黄勇 · CHY.GALAXY —— 以像素为骨，以作品为星"
   },
   "projects": [
+    {
+      "name": "KERNEL PANIC 内核恐慌",
+      "tag": "Godot 4.7 · 割草生存（北京篇）",
+      "href": "kernel-panic.html",
+      "images": [
+        "assets/portfolio/kernel-panic-arena.png"
+      ],
+      "bullets": [
+        "你是系统管理员 @，用自动火力清剿失控的生产节点敌群",
+        "3 武器槽位（高频扳手/回旋扳手/引雷术）+ 12 种补丁与稀有度",
+        "包围网事件 + BOSS 巨型进程王；逐帧行走动画管线",
+        "PRD / GDD / 源码讲解三份文档齐全，参数集中在单文件可调"
+      ],
+      "links": [
+        {
+          "text": "项目主页 →",
+          "href": "kernel-panic.html"
+        },
+        {
+          "text": "下载 Win64",
+          "href": "https://github.com/2126431683a-netizen/kernel-panic/releases/download/v2.2/KERNEL_PANIC_v2.2_win64.zip"
+        },
+        {
+          "text": "源码仓库",
+          "href": "https://github.com/2126431683a-netizen/kernel-panic"
+        }
+      ]
+    },
     {
       "name": "跨境电商运营实践",
       "tag": "电商 · 运营",
